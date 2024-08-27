@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public UserDTO getUserById(Long id) {
-        UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Error"));
+        UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user Exist"));
         return new UserDTO(userModel);
     }
 
@@ -86,5 +86,14 @@ public class UserService {
     public UserDTO updateByToken(String token, UserDTO userDTO) {
         DataHolder dataHolder = tokenUtility.decode(token);
         return updateUser(dataHolder.getId(), userDTO);
+    }
+
+    public UserDTO getIdByToken(String token, long id) {
+        DataHolder decode = tokenUtility.decode(token);
+        if (!decode.getRole().equalsIgnoreCase("ADmin")) {
+            throw new RuntimeException("Customer can't see other customer");
+        }
+
+        return getUserById(id);
     }
 }

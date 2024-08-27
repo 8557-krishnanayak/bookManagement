@@ -27,8 +27,13 @@ public class AdminController {
         return new ResponseEntity<>(userService.loginService(email, password), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAll(@RequestBody String token) {
+    @GetMapping("/users")
+    public ResponseEntity<?> getAll(@RequestHeader String token) {
         return new ResponseEntity<>(userService.getAllUser(token), HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> getAll(@RequestHeader String token, @PathVariable Long id) {
+        return new ResponseEntity<>(userService.getIdByToken(token, id), HttpStatus.OK);
     }
 }
