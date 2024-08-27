@@ -1,4 +1,4 @@
-package com.godigit.bookmybook.modal;
+package com.godigit.bookmybook.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
