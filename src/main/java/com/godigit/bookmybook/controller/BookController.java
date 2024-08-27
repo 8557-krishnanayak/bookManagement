@@ -24,24 +24,24 @@ public class BookController {
     }
 
     @GetMapping("/{book_id}")
-    public ResponseEntity<BookModel> getBook(@PathVariable long book_id)
+    public ResponseEntity<BookModel> getBook(@RequestHeader String token,@PathVariable long book_id)
     {
-        return new ResponseEntity<>(bookService.getBookByID(book_id),HttpStatus.FOUND);
+        return new ResponseEntity<>(bookService.getBookByID(book_id,token),HttpStatus.FOUND);
     }
     @GetMapping()
-    public ResponseEntity<List<BookModel>> getAllBooks()
+    public ResponseEntity<List<BookModel>> getAllBooks(@RequestHeader String token)
     {
-        return new ResponseEntity<>(bookService.getAllBooks(),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(bookService.getAllBooks(token),HttpStatus.ACCEPTED);
     }
     @DeleteMapping("/{book_id}")
-    public ResponseEntity<String> deleteBook(@PathVariable long book_id)
+    public ResponseEntity<String> deleteBook(@RequestHeader String token,@PathVariable long book_id)
     {
-        return new ResponseEntity<>(bookService.deleteBook(book_id),HttpStatus.OK);
+        return new ResponseEntity<>(bookService.deleteBook(token,book_id),HttpStatus.OK);
     }
     @PutMapping("/{book_id}")
-    public ResponseEntity<String> updateBook(@PathVariable long book_id,@RequestBody BookDTO bookDTO)
+    public ResponseEntity<String> updateBook(@RequestHeader String token,@PathVariable long book_id,@RequestBody BookDTO bookDTO)
     {
-        return new ResponseEntity<>(bookService.updateBook(book_id,bookDTO),HttpStatus.FOUND);
+        return new ResponseEntity<>(bookService.updateBook(token,book_id,bookDTO),HttpStatus.FOUND);
     }
 
 }
