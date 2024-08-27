@@ -27,10 +27,8 @@ public class AdminController {
         return new ResponseEntity<>(userService.loginService(email, password), HttpStatus.OK);
     }
 
-
     @GetMapping
     public ResponseEntity<?> getAll(@RequestBody String token) {
-//        TODO: only Admin can retrieve this data
         return new ResponseEntity<>(userService.getAllUser(token), HttpStatus.OK);
     }
 }
