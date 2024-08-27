@@ -1,8 +1,15 @@
 package com.godigit.bookmybook.dto;
 
+import com.godigit.bookmybook.model.BookModel;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookDTO {
 
     @NotBlank(message = "Book name should not be blank")
@@ -19,4 +26,13 @@ public class BookDTO {
 
     private double price;
     private long quantity;
+
+    public BookDTO(BookModel book) {
+        this.bookName = book.getBookName();
+        this.author = book.getAuthor();
+        this.description = book.getDescription();
+        this.logo = book.getLogo();
+        this.price = book.getPrice();
+        this.quantity = book.getQuantity();
+    }
 }
