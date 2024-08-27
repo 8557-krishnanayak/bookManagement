@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 public class BookmybookApplication {
 
+
+//	comment
 	public static void main(String[] args) {
 		SpringApplication.run(BookmybookApplication.class, args);
 		log.info("--- Application Started ---");
