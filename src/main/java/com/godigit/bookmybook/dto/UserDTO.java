@@ -1,6 +1,7 @@
 package com.godigit.bookmybook.dto;
 
 import com.godigit.bookmybook.model.UserModel;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class UserDTO {
     private LocalDate registeredDate;
     private LocalDate updateDate;
 
+
     public UserDTO(UserModel user) {
         this(user.getId(),
                 user.getFirstname(),
@@ -36,5 +38,7 @@ public class UserDTO {
                 user.getRegisteredDate(),
                 user.getUpdateDate()
                 );
+
+
     }
 }
