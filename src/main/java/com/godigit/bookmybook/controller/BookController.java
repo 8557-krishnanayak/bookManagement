@@ -1,4 +1,4 @@
-package com.godigit.bookmybook.contoller;
+package com.godigit.bookmybook.controller;
 
 import com.godigit.bookmybook.dto.BookDTO;
 import com.godigit.bookmybook.model.BookModel;
@@ -19,8 +19,8 @@ public class BookController {
 //    TODO: Calling create api
     @PostMapping()
     public ResponseEntity<?> createBook(@RequestHeader String token,@RequestBody BookDTO bookDTO)  {
-q
-        return new ResponseEntity<>(bookService.addBook(bookDTO), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(bookService.addBook(token,bookDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/{book_id}")

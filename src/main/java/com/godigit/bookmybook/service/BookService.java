@@ -17,7 +17,7 @@ public class BookService {
     BookRepository bookRepository;
 
 //    TODO : Adding a new book
-    public BookModel addBook(BookDTO bookDTO)  {
+    public BookModel addBook(String token,BookDTO bookDTO)  {
         BookModel book = new BookModel(bookDTO);
         bookRepository.save(book);
         return book;
