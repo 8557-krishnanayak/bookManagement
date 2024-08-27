@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
-@NamedEntityGraph
+@NoArgsConstructor
 @Data
 @Builder
 @Entity
@@ -29,7 +30,9 @@ public class UserModel {
 
     private String password;
     private String email;
-    private String role;
+
+    @Builder.Default
+    private String role = "Customer";
 
     @CreationTimestamp
     private LocalDate registeredDate;
@@ -48,5 +51,11 @@ public class UserModel {
                 user.getRegisteredDate(),
                 user.getUpdateDate()
         );
+    }
+
+    @PrePersist
+    void preInsert() {
+        if (this.role == null)
+            this.role = "Customer";
     }
 }

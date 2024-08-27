@@ -1,14 +1,12 @@
 package com.godigit.bookmybook.model;
 
 import com.godigit.bookmybook.dto.BookDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Data
@@ -18,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class BookModel {
 
     @Id
-    @GeneratedValue
-    @Column(name = "")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private long id;
 
     private String bookName;
