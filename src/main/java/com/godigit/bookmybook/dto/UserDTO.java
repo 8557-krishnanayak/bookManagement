@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.dto;
 
+import com.godigit.bookmybook.model.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,17 @@ public class UserDTO {
 
     private LocalDate registeredDate;
     private LocalDate updateDate;
+
+    public UserDTO(UserModel user) {
+        this(user.getId(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getBirthDate(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getRole(),
+                user.getRegisteredDate(),
+                user.getUpdateDate()
+                );
+    }
 }

@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.model;
 
+import com.godigit.bookmybook.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +26,27 @@ public class UserModel {
     private String lastname;
     private LocalDate birthDate;
 
+
+    private String password;
+    private String email;
+    private String role;
+
     @CreationTimestamp
     private LocalDate registeredDate;
 
     @UpdateTimestamp
     private LocalDate updateDate;
 
-    private String password;
-    private String email;
-    private String role;
+    public UserModel(UserDTO user) {
+        this(user.getId(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getBirthDate(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getRole(),
+                user.getRegisteredDate(),
+                user.getUpdateDate()
+        );
+    }
 }
