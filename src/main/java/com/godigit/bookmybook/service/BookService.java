@@ -38,7 +38,10 @@ public class BookService {
     //    TODO : Adding book - if the user  admin
     public BookModel addBook(String token, BookDTO bookDTO) {
         checkAdmin(token);
+        System.out.println(bookDTO);
         BookModel book = new BookModel(bookDTO);
+        System.out.println(book);
+
         bookRepository.save(book);
         return book;
     }

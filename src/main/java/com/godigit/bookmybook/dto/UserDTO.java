@@ -6,11 +6,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -36,4 +38,6 @@ public class UserDTO {
 
     private LocalDate registeredDate;
     private LocalDate updateDate;
+
+    private CartDto cart;
 }

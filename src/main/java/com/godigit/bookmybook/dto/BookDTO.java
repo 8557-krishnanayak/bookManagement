@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookDTO {
 
+    private Long book_id;
+
     @NotBlank(message = "Book name should not be blank")
     private String bookName;
 
@@ -28,6 +30,7 @@ public class BookDTO {
     private long quantity;
 
     public BookDTO(BookModel book) {
+        this.book_id = book.getId();
         this.bookName = book.getBookName();
         this.author = book.getAuthor();
         this.description = book.getDescription();

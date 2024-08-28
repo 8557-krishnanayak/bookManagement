@@ -45,6 +45,7 @@ public class UserService {
 
     public UserDTO getUserById(Long id) {
         UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user Exist"));
+        System.out.println(userModel);
         return UserConverter.toDTO(userModel);
     }
 
@@ -100,6 +101,6 @@ public class UserService {
             throw new RuntimeException("Customer can't see other customer");
         }
 
-        return getUserById(id);
+        return getUserById(decode.getId());
     }
 }

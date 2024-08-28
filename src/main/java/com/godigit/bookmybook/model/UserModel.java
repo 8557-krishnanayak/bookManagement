@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.model;
 
+import com.godigit.bookmybook.dto.CartDto;
 import com.godigit.bookmybook.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,9 @@ public class UserModel {
     @UpdateTimestamp
     private LocalDate updateDate;
 
+    @OneToOne
+    @Builder.Default
+    private CartModel cart = new CartModel();
 
     @PrePersist
     void preInsert() {

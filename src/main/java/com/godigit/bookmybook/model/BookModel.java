@@ -18,7 +18,7 @@ public class BookModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
-    private long id;
+    private Long id;
 
     private String bookName;
     private String author;
@@ -31,6 +31,7 @@ public class BookModel {
     private long quantity;
 
     public BookModel(BookDTO bookDTO) {
+        this.id = bookDTO.getBook_id();
         this.bookName = bookDTO.getBookName();
         this.author = bookDTO.getAuthor();
         this.description = bookDTO.getDescription();
