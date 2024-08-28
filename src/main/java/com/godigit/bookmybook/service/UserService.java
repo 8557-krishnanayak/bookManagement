@@ -54,6 +54,10 @@ public class UserService {
             userModel.setFirstname(userDTO.getFirstname());
         if (userDTO.getLastname() != null)
             userModel.setFirstname(userDTO.getLastname());
+        if (userDTO.getEmail() != null)
+            userModel.setEmail(userDTO.getEmail());
+        if(userDTO.getPassword() != null)
+            userModel.setPassword(userDTO.getPassword());
 
         UserModel save = userRepository.save(userModel);
         return new UserDTO(save);
