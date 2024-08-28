@@ -40,18 +40,6 @@ public class UserModel {
     @UpdateTimestamp
     private LocalDate updateDate;
 
-    public UserModel(UserDTO user) {
-        this(user.getId(),
-                user.getFirstname(),
-                user.getLastname(),
-                user.getBirthDate(),
-                user.getPassword(),
-                user.getEmail(),
-                user.getRole(),
-                user.getRegisteredDate(),
-                user.getUpdateDate()
-        );
-    }
 
     @PrePersist
     void preInsert() {

@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.service;
 
+import com.godigit.bookmybook.converstion.UserConverter;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.model.UserModel;
@@ -26,9 +27,10 @@ public class UserService {
             throw new RuntimeException("User already exist.");
         }
 
-        UserModel saveModal = new UserModel(userDTO);
-        userRepository.save(saveModal);
-        return new UserDTO(saveModal);
+        UserModel saveModal = UserConverter.toEntity(userDTO);
+        System.out.println(saveModal);
+
+        return UserConverter.toDTO(saveModal);
     }
 
     public List<UserDTO> getAllUser(String token) {
@@ -38,12 +40,12 @@ public class UserService {
             throw new RuntimeException("Customer has no access the to retrieve all user details");
 
         List<UserModel> allUserData = userRepository.findAll();
-        return allUserData.stream().map(UserDTO::new).collect(Collectors.toList());
+        return allUserData.stream().map(UserConverter::toDTO).collect(Collectors.toList());
     }
 
     public UserDTO getUserById(Long id) {
         UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user Exist"));
-        return new UserDTO(userModel);
+        return UserConverter.toDTO(userModel);
     }
 
 
@@ -54,9 +56,13 @@ public class UserService {
             userModel.setFirstname(userDTO.getFirstname());
         if (userDTO.getLastname() != null)
             userModel.setFirstname(userDTO.getLastname());
+        if (userDTO.getEmail() != null)
+            userModel.setEmail(userDTO.getEmail());
+        if(userDTO.getPassword() != null)
+            userModel.setPassword(userDTO.getPassword());
 
         UserModel save = userRepository.save(userModel);
-        return new UserDTO(save);
+        return UserConverter.toDTO(save);
     }
 
 
