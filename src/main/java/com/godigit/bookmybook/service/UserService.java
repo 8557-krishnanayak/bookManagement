@@ -29,8 +29,9 @@ public class UserService {
 
         UserModel saveModal = UserConverter.toEntity(userDTO);
         System.out.println(saveModal);
+        UserModel save = userRepository.save(saveModal);
 
-        return UserConverter.toDTO(saveModal);
+        return UserConverter.toDTO(save);
     }
 
     public List<UserDTO> getAllUser(String token) {
