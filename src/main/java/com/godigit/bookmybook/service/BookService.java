@@ -33,9 +33,7 @@ public class BookService {
         if (!dataHolder.getRole().equalsIgnoreCase("admin") &&
                 !dataHolder.getRole().equalsIgnoreCase("customer"))
             throw new RuntimeException("You are not registered..! :-( ");
-
     }
-
 
     //    TODO : Adding book - if the user  admin
     public BookModel addBook(String token, BookDTO bookDTO) {
@@ -43,7 +41,6 @@ public class BookService {
         BookModel book = new BookModel(bookDTO);
         bookRepository.save(book);
         return book;
-
     }
 
     //    TODO: Retrieving book by Id - only if the user  admin
