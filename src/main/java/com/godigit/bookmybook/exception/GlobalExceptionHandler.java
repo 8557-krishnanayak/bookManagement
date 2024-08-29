@@ -29,6 +29,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(PasswordMissMatchException.class)
+    public ResponseEntity<?> passwordMissMatchException(PasswordMissMatchException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", e.getMessage());
+        errors.put("exception", e.getClass().toString());
+        return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+    }
+
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<?> unauthorizedException(UnauthorizedException e) {
