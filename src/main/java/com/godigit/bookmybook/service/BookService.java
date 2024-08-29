@@ -3,11 +3,16 @@ package com.godigit.bookmybook.service;
 import com.godigit.bookmybook.dto.BookDTO;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.model.BookModel;
+import com.godigit.bookmybook.model.ImageModel;
 import com.godigit.bookmybook.repository.BookRepository;
+import com.godigit.bookmybook.repository.ImageRepository;
 import com.godigit.bookmybook.util.TokenUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -17,7 +22,9 @@ public class BookService {
     BookRepository bookRepository;
 
     @Autowired
-    UserService userService;
+    ImageService imageService;
+
+
 
     @Autowired
     TokenUtility tokenUtility;
@@ -36,16 +43,26 @@ public class BookService {
     }
 
     //    TODO : Adding book - if the user  admin
-    public BookModel addBook(String token, BookDTO bookDTO) {
+    public ResponseEntity<?> addBook(String token, BookDTO bookDTO) throws IOException {
         checkAdmin(token);
-        BookModel book = new BookModel(bookDTO);
-        bookRepository.save(book);
-        return book;
+        List<BookModel> bookIn = bookRepository.findAll().stream().filter(book -> {
+            return book.getBookName().equals(bookDTO.getBookName()) && book.getAuthor().equals(bookDTO.getAuthor());
+        }).toList();
+
+        if (!bookIn.isEmpty()) {
+            throw new RuntimeException("Book already exits ");
+
+        } else {
+            BookModel book = new BookModel(bookDTO);
+//            book.setLogo(logo.getBytes());
+            bookRepository.save(book);
+            return new ResponseEntity<>(book, HttpStatus.ACCEPTED);
+        }
     }
 
     //    TODO: Retrieving book by Id - only if the user  admin
     public BookModel getBookByID(Long id, String token) {
-        checkAdmin(token);
+        checkUser(token);
         BookModel book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
         return book;
     }
@@ -59,7 +76,7 @@ public class BookService {
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
         checkAdmin(token);
-        BookModel book = getBookByID(id,token);
+        BookModel book = getBookByID(id, token);
         if (bookDTO.getBookName() != null)
             book.setBookName(bookDTO.getBookName());
         if (bookDTO.getAuthor() != null)
@@ -77,12 +94,36 @@ public class BookService {
         return "Updated the book with id :" + id;
     }
 
+
     //    TODO: Deleting book - only if the user  admin
-    public String deleteBook(String token,long id) {
+    public String deleteBook(String token, long id) {
         checkAdmin(token);
-        BookModel delete_book = getBookByID(id,token);
+        BookModel delete_book = getBookByID(id, token);
         bookRepository.deleteById(delete_book.getId());
         return "Deleted the book with id : " + id;
     }
 
+    public String changeBookPrice(String token, long bookId, double price) {
+        checkAdmin(token);
+        BookDTO updateDTO = BookDTO.builder().price(price).build();
+        updateBook(token, bookId, updateDTO);
+        return "Changed the price of the book with id " + bookId;
+    }
+
+    public ResponseEntity<?> changeQuantityByToken(String token, Long book_id, int quantity) {
+        DataHolder dataHolder = tokenUtility.decode(token);
+        String role = dataHolder.getRole();
+        if (!role.equalsIgnoreCase("Admin"))
+            throw new RuntimeException("You are not authorized  :-) ");
+        return new ResponseEntity<>(updateBook(token, book_id, BookDTO.builder().quantity(quantity).build()), HttpStatus.ACCEPTED);
+    }
+
+    public BookModel addBookImage(String token, long image_id, long bookId) {
+
+        ImageModel image = imageService.getImageByID(image_id);
+        BookModel book = getBookByID(bookId, token);
+        book.setLogo(image);
+        bookRepository.save(book);
+        return book;
+    }
 }
