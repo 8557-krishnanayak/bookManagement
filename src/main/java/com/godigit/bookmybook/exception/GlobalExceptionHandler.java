@@ -12,9 +12,38 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> runtimeException(RuntimeException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", e.getMessage());
+        errors.put("exception", e.getClass().toString());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    public ResponseEntity<?> resourceAlreadyExistException(ResourceAlreadyExistException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", e.getMessage());
+        errors.put("exception", e.getClass().toString());
+        return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+    }
+
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> unauthorizedException(UnauthorizedException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", e.getMessage());
+        errors.put("exception", e.getClass().toString());
+        return new ResponseEntity<>(errors, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> forbiddenException(ForbiddenException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", e.getMessage());
+        errors.put("exception", e.getClass().toString());
+        return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -24,6 +53,14 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         });
 
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> runtimeException(RuntimeException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", e.getMessage());
+        errors.put("exception", e.getClass().toString());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }
