@@ -5,7 +5,6 @@ import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.ImageModel;
 import com.godigit.bookmybook.repository.BookRepository;
-import com.godigit.bookmybook.repository.ImageRepository;
 import com.godigit.bookmybook.util.TokenUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +24,10 @@ public class BookService {
     ImageService imageService;
 
 
-
     @Autowired
     TokenUtility tokenUtility;
 
-    private void checkAdmin(String token) {
+    public void checkAdmin(String token) {
         DataHolder dataHolder = tokenUtility.decode(token);
         if (!dataHolder.getRole().equalsIgnoreCase("admin"))
             throw new RuntimeException("You are not authorized :-( ");
@@ -75,7 +73,7 @@ public class BookService {
 
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
-        checkAdmin(token);
+
         BookModel book = getBookByID(id, token);
         if (bookDTO.getBookName() != null)
             book.setBookName(bookDTO.getBookName());
@@ -110,20 +108,28 @@ public class BookService {
         return "Changed the price of the book with id " + bookId;
     }
 
+    public String changeBookQuantity(String token, long book_id, int quantity) {
+        BookModel bookModel = getBookByID(book_id, token);
+        bookModel.setQuantity(quantity);
+        bookRepository.save(bookModel);
+        return "Changed book quantity for book id " + book_id;
+    }
+
     public ResponseEntity<?> changeQuantityByToken(String token, Long book_id, int quantity) {
         DataHolder dataHolder = tokenUtility.decode(token);
         String role = dataHolder.getRole();
         if (!role.equalsIgnoreCase("Admin"))
             throw new RuntimeException("You are not authorized  :-) ");
-        return new ResponseEntity<>(updateBook(token, book_id, BookDTO.builder().quantity(quantity).build()), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(changeBookQuantity(token, book_id, quantity), HttpStatus.ACCEPTED);
     }
 
     public BookModel addBookImage(String token, long image_id, long bookId) {
 
-        ImageModel image = imageService.getImageByID(image_id);
+        ImageModel image = imageService.getImageByID(token, image_id);
         BookModel book = getBookByID(bookId, token);
         book.setLogo(image);
         bookRepository.save(book);
+
         return book;
     }
 }

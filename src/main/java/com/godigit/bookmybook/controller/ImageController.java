@@ -21,5 +21,9 @@ public class ImageController {
     public ResponseEntity<?> saveImage(@RequestHeader String token, @RequestPart MultipartFile logo) throws IOException {
         return new ResponseEntity<>(imageService.addImage(token,logo), HttpStatus.ACCEPTED);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateImage(@RequestHeader String token,@RequestPart MultipartFile logo,@PathVariable long id) throws IOException {
+        return new ResponseEntity<>(imageService.updateImage(token,logo,id),HttpStatus.ACCEPTED);
+    }
 
 }
