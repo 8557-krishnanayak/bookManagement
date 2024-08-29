@@ -2,7 +2,10 @@ package com.godigit.bookmybook.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 public class BookDTO {
 
     @NotBlank(message = "Book name should not be blank")
