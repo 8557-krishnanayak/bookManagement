@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Data
@@ -29,6 +31,9 @@ public class BookModel {
 
     private double price;
     private long quantity;
+
+    @ManyToMany(mappedBy = "bookModelList")
+    private List<WishListModel> wishList;
 
     public BookModel(BookDTO bookDTO) {
         this.bookName = bookDTO.getBookName();
