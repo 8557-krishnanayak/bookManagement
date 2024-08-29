@@ -25,6 +25,7 @@ public class BookModel {
     private String description;
 
     @Column(name = "book_logo")
+//    @Lob
     private byte[] logo;
 
     private double price;

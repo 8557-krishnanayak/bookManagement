@@ -97,7 +97,7 @@ public class UserService {
 
     public UserDTO getIdByToken(String token, long id) {
         DataHolder decode = tokenUtility.decode(token);
-        if (!decode.getRole().equalsIgnoreCase("ADmin")) {
+        if (!decode.getRole().equalsIgnoreCase("Admin")) {
             throw new RuntimeException("Customer can't see other customer");
         }
 

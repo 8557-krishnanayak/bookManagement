@@ -7,9 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,7 +21,7 @@ public class BookController {
 
     //    TODO: Adding new book using this API
     @PostMapping()
-    public ResponseEntity<?> createBook(@RequestHeader String token,@Valid @RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> createBook(@RequestHeader String token, @Valid @RequestBody BookDTO bookDTO) throws IOException {
 
         return new ResponseEntity<>(bookService.addBook(token, bookDTO), HttpStatus.CREATED);
     }
@@ -52,8 +52,8 @@ public class BookController {
 
     //    TODO: Changing  the book quantity using this API
     @PutMapping("/changequantity/{book_id}/{quantity}")
-    public ResponseEntity<String> changeBookQuantity(@RequestHeader String token, @PathVariable long book_id, @PathVariable int quantity) {
-        return new ResponseEntity<>(bookService.changeBookQuantity(token, book_id, quantity), HttpStatus.ACCEPTED);
+    public ResponseEntity<?> change(@RequestHeader String token, @PathVariable long book_id, @PathVariable int quantity) {
+        return new ResponseEntity<>(bookService.changeQuantityByToken(token, book_id, quantity), HttpStatus.ACCEPTED);
     }
 
     //    TODO: Changing the price of a book using this API

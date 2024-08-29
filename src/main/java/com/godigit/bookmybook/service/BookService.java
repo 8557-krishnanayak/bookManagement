@@ -10,17 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
 
     @Autowired
     BookRepository bookRepository;
-
-    @Autowired
-    UserService userService;
 
     @Autowired
     TokenUtility tokenUtility;
@@ -39,7 +36,7 @@ public class BookService {
     }
 
     //    TODO : Adding book - if the user  admin
-    public ResponseEntity<?> addBook(String token, BookDTO bookDTO) {
+    public ResponseEntity<?> addBook(String token, BookDTO bookDTO) throws IOException {
         checkAdmin(token);
         List<BookModel> bookIn = bookRepository.findAll().stream().filter(book -> {
             return book.getBookName().equals(bookDTO.getBookName()) && book.getAuthor().equals(bookDTO.getAuthor());
@@ -50,6 +47,7 @@ public class BookService {
 
         } else {
             BookModel book = new BookModel(bookDTO);
+//            book.setLogo(logo.getBytes());
             bookRepository.save(book);
             return new ResponseEntity<>(book, HttpStatus.ACCEPTED);
         }
@@ -57,7 +55,7 @@ public class BookService {
 
     //    TODO: Retrieving book by Id - only if the user  admin
     public BookModel getBookByID(Long id, String token) {
-        checkAdmin(token);
+        checkUser(token);
         BookModel book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
         return book;
     }
@@ -70,7 +68,7 @@ public class BookService {
 
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
-        checkAdmin(token);
+
         BookModel book = getBookByID(id, token);
         if (bookDTO.getBookName() != null)
             book.setBookName(bookDTO.getBookName());
@@ -89,6 +87,8 @@ public class BookService {
         return "Updated the book with id :" + id;
     }
 
+
+
     //    TODO: Deleting book - only if the user  admin
     public String deleteBook(String token, long id) {
         checkAdmin(token);
@@ -97,17 +97,21 @@ public class BookService {
         return "Deleted the book with id : " + id;
     }
 
-    public String changeBookQuantity(String token, long bookId, int quantity) {
-        checkAdmin(token);
-        BookDTO updateDTO = BookDTO.builder().quantity(quantity).build();
-        updateBook(token, bookId, updateDTO);
-        return "Changed the book quantity with id " + bookId;
-    }
+
+
 
     public String changeBookPrice(String token, long bookId, double price) {
         checkAdmin(token);
         BookDTO updateDTO = BookDTO.builder().price(price).build();
         updateBook(token, bookId, updateDTO);
         return "Changed the price of the book with id " + bookId;
+    }
+
+    public ResponseEntity<?> changeQuantityByToken(String token,Long book_id,int quantity) {
+        DataHolder dataHolder = tokenUtility.decode(token);
+        String role = dataHolder.getRole();
+        if(!role.equalsIgnoreCase("Admin"))
+            throw new RuntimeException("You are not authorized  :-) ");
+        return new ResponseEntity<>(updateBook(token,book_id, BookDTO.builder().quantity(quantity).build()),HttpStatus.ACCEPTED);
     }
 }
