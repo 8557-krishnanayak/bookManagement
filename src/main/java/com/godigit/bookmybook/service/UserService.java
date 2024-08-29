@@ -108,7 +108,7 @@ public class UserService {
 
     public UserDTO getIdByToken(String token, long id) {
         DataHolder decode = tokenUtility.decode(token);
-        if (!decode.getRole().equalsIgnoreCase("ADmin")) {
+        if (!decode.getRole().equalsIgnoreCase("Admin")) {
             throw new RuntimeException("Customer can't see other customer");
         }
 
@@ -116,10 +116,4 @@ public class UserService {
     }
 
 
-    public List<UserDTO> getAllUserCartItems(String token) {
-        DataHolder decode = tokenUtility.decode(token);
-
-        List<UserModel> allUserData = userRepository.findAll();
-        return allUserData.stream().map(UserConverter::toDTO).collect(Collectors.toList());
-    }
 }

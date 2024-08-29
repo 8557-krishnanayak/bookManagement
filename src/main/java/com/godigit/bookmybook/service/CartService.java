@@ -16,6 +16,9 @@ import com.godigit.bookmybook.repository.UserRepository;
 import com.godigit.bookmybook.util.TokenUtility;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
@@ -65,13 +68,15 @@ public class CartService {
     }
 
 
-    public void updateQuantity(String token, long cart_id, long update_quantity) {
+    public String updateQuantity(String token, long cart_id, long update_quantity) {
 
         CartModel required_Cart = cartRepo.findById(cart_id).orElseThrow(() -> new RuntimeException("Cart id doesn't exist!"));
         if (update_quantity > required_Cart.getQuantity())
             incrementQuantity(required_Cart, update_quantity);
         else
             decrementQuantity(required_Cart, update_quantity);
+
+        return "Cart updated for the iD: "+cart_id;
     }
 
     private void incrementQuantity(CartModel required_Cart, long updateQuantity) {
@@ -96,21 +101,38 @@ public class CartService {
 
     public List<CartModel> getAllCartItemsForUser(String token) {
         DataHolder dataHolder = tokenUtility.decode(token);
+        UserModel userModel = userService.getUserModalById(dataHolder.getId());
 
-        List<UserDTO> cart = userService.getAllUser(token);
+        List<CartModel> cart = userModel.getCart();
         List<CartModel> userCartItems = new ArrayList<>();
-        for (UserDTO userDTO : cart) {
-            CartModel userCartItem = cartRepo.findById(dataHolder.getId())
-                    .orElseThrow(() -> new RuntimeException("User Id not found"));
-            userCartItems.add(userCartItem);
+
+        for(CartModel c : cart){
+            userCartItems.add(c);
         }
         return userCartItems;
     }
 
 
-    public List<CartModel> getAllCartItems() {
-        return cartRepo.findAll();
+
+//    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<?> getAllCartItems(String token) {
+
+        if (isAdmin(token)) {
+            List<CartModel> cartItems = cartRepo.findAll();
+            return new ResponseEntity<>(cartItems, HttpStatus.OK);
+        } else {
+            String message = "You do not have access to view all cart items.";
+            return new ResponseEntity<>(message, HttpStatus.FORBIDDEN);
+        }
     }
+    public boolean isAdmin(String token) {
+        DataHolder dataHolder = tokenUtility.decode(token);
+        UserModel user = userService.getUserModalById(dataHolder.getId());
+        System.out.println(user.getRole());
+        return user != null && user.getRole().equalsIgnoreCase("ADMIN");
+    }
+
+
 
     @Transactional
     public String removeByUserId(String token) {
@@ -122,9 +144,6 @@ public class CartService {
         for(CartModel c : cart){
             cartRepo.deleteAll(c.getId());
         }
-
-
-
         return "Removed ";
     }
 }
