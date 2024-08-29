@@ -18,8 +18,20 @@ public class TokenUtility {
     }
 
     public DataHolder decode(String token) {
-        Long id = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token).getClaim("id").asLong();
-        String role = JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token).getClaim("role").asString();
+        Long id = JWT
+                .require(Algorithm.HMAC256(SECRET))
+                .build()
+                .verify(token)
+                .getClaim("id")
+                .asLong();
+
+
+        String role = JWT
+                .require(Algorithm.HMAC256(SECRET))
+                .build().verify(token).getClaim("role").asString();
+
+
+
         return DataHolder.builder().id(id).role(role).build();
     }
 
