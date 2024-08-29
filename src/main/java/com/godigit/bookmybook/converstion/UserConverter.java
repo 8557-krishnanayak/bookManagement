@@ -6,6 +6,9 @@ import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.model.CartModel;
 import com.godigit.bookmybook.model.UserModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserConverter {
 
     public static UserDTO toDTO(UserModel user) {
@@ -21,14 +24,18 @@ public class UserConverter {
         dto.setRegisteredDate(user.getRegisteredDate());
         dto.setUpdateDate(user.getUpdateDate());
 
-        CartModel cart = user.getCart() == null ? new CartModel() : user.getCart();
-        CartDto cartDto = CartConvertor.toDTO(cart);
-        dto.setCart(cartDto);
+        List<CartModel> cart = user.getCart() == null ? new ArrayList<>() : user.getCart();
+        List<CartDto> list = cart.stream().map(CartConvertor::toDTO).toList();
+
+        dto.setCart(list);
 
         return dto;
     }
 
     public static UserModel toEntity(UserDTO dto) {
+
+        if(dto == null)
+            throw new IllegalArgumentException("UserDto cannot be null.");
         UserModel user = new UserModel();
         user.setId(dto.getId());
         user.setEmail(dto.getEmail());
@@ -40,9 +47,9 @@ public class UserConverter {
         user.setRegisteredDate(dto.getRegisteredDate());
         user.setUpdateDate(dto.getUpdateDate());
 
-        CartDto cartDto = dto.getCart(); // null
-        CartModel cartEntity = CartConvertor.toCartEntity(cartDto);
-        user.setCart(cartEntity);
+//        CartDto cartDto = dto.getCart()==null ? new CartDto(): dto.getCart(); // null
+//        CartModel cartEntity = CartConvertor.toCartEntity(cartDto);
+//        user.setCart(cartEntity);
 
         return user;
     }

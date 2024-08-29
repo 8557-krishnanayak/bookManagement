@@ -5,29 +5,35 @@ import com.godigit.bookmybook.model.CartModel;
 import com.godigit.bookmybook.model.UserModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Builder
-@AllArgsConstructor
+
 @NoArgsConstructor
+@Getter
+@Setter
 @Data
 public class CartDto {
 
-        private UserModel user;
 
-        @Builder.Default
-        private List<BookDTO> book = new ArrayList<>();
+        private  Long id;
+        private BookModel book;
 
 //        @NotBlank(message = "Quantity should not be blank")
-        private long quantity;
+        private long quantity=1;
         private long totalPrice;
+
+        public CartDto(CartDto cart){
+                this.book=cart.getBook();
+                this.quantity=cart.getQuantity();
+                this.totalPrice= cart.getTotalPrice();
+                this.id= cart.getId();
+        }
+
+
     }
 
 

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -39,5 +40,5 @@ public class UserDTO {
     private LocalDate registeredDate;
     private LocalDate updateDate;
 
-    private CartDto cart;
+    private List<CartDto> cart;
 }

@@ -1,20 +1,20 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.godigit.bookmybook.dto.CartDto;
 import com.godigit.bookmybook.dto.UserDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString(exclude = "cart")
 @Builder
 @Entity
 @Table(name = "users")
@@ -41,13 +41,8 @@ public class UserModel {
     @UpdateTimestamp
     private LocalDate updateDate;
 
-    @OneToOne
-    @Builder.Default
-    private CartModel cart = new CartModel();
+    @OneToMany(cascade = CascadeType.PERSIST,mappedBy = "users")
+    @JsonManagedReference(value = "cartref")
+    private List<CartModel> cart;
 
-    @PrePersist
-    void preInsert() {
-        if (this.role == null)
-            this.role = "Customer";
-    }
 }

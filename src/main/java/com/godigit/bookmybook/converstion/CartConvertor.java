@@ -10,36 +10,40 @@ import java.util.List;
 public class CartConvertor {
 
     public static CartDto toDTO(CartModel cart){
+
+        if(cart==null)
+            return null;
+
         CartDto dto = new CartDto();
 
-        List<BookDTO> bookDto = cart.getBook().stream().map(CartConvertor::toBookDto).toList();
-
-        dto.setBook(bookDto);
+        dto.setId(cart.getId());
+        dto.setBook(cart.getBook());
         dto.setQuantity(cart.getQuantity());
-        dto.setUser(cart.getUser());
         dto.setTotalPrice(cart.getTotalPrice());
 
         return dto;
     }
 
     public static CartModel toCartEntity(CartDto dto){
+        if(dto==null){
+            return null;
+        }
         CartModel cart = new CartModel();
+        cart.setId(dto.getId());
 
         cart.setQuantity(dto.getQuantity());
-
-        cart.setUser(dto.getUser());
-
         cart.setTotalPrice(dto.getTotalPrice());
-
-        List<BookModel> book = dto.getBook().stream().map(CartConvertor::toBookEntity).toList();
-        cart.setBook(book);
+        cart.setBook(dto.getBook());
 
         return cart;
     }
 
     public static BookDTO toBookDto(BookModel book) {
+        if(book == null)
+            return null;
         BookDTO dto = new BookDTO();
 
+        dto.setBook_id(book.getId());
         dto.setBookName(book.getBookName());
         dto.setLogo(book.getLogo());
         dto.setPrice(book.getPrice());
@@ -53,8 +57,11 @@ public class CartConvertor {
 
 
     public static BookModel toBookEntity(BookDTO Dto) {
+        if(Dto == null)
+            return null;
         BookModel book = new BookModel();
 
+        book.setId(Dto.getBook_id());
         book.setBookName(Dto.getBookName());
         book.setLogo(Dto.getLogo());
         book.setPrice(Dto.getPrice());
@@ -62,6 +69,7 @@ public class CartConvertor {
         book.setQuantity(Dto.getQuantity());
         book.setPrice(Dto.getPrice());
         book.setAuthor(Dto.getAuthor());
+
 
         return book;
     }

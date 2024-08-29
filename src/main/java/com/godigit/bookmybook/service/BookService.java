@@ -48,7 +48,7 @@ public class BookService {
 
     //    TODO: Retrieving book by Id - only if the user  admin
     public BookModel getBookByID(Long id, String token) {
-        checkAdmin(token);
+        checkUser(token);
         BookModel book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
         return book;
     }
@@ -58,6 +58,10 @@ public class BookService {
         checkUser(token);
         return bookRepository.findAll();
     }
+
+
+
+
 
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
@@ -88,4 +92,18 @@ public class BookService {
         return "Deleted the book with id : " + id;
     }
 
+    public String changeBookQuantity(String token, long bookId, int quantity) {
+        checkAdmin(token);
+        BookDTO updateDTO = BookDTO.builder().quantity(quantity).build();
+        updateBook(token, bookId, updateDTO);
+        return "Changed the book quantity with id " + bookId;
+    }
+
+    public String changeBookPrice(String token, long bookId, double price) {
+        checkAdmin(token);
+        BookDTO updateDTO = BookDTO.builder().price(price).build();
+        updateBook(token, bookId, updateDTO);
+        return "Changed the price of the book with id " + bookId;
+    }
 }
+

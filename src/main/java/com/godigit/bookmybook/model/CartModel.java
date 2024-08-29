@@ -1,11 +1,9 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +18,28 @@ public class CartModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long cart_id;
+    private Long id;
 
-    @OneToOne
-    @JsonIgnore
-    private UserModel user;
+//    @ManyToOne
+//    private UserModel user;
+//
+//
+//    @ManyToOne
+//    private BookModel book;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Product_cart",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-
-    @Builder.Default
-    private List<BookModel> book = new ArrayList<>();
-
-    private long quantity=1;
+    private long quantity;
     private long totalPrice;
+
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "cartref")
+    private UserModel users;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "book_id")
+    private BookModel book;
+
 
 
 }

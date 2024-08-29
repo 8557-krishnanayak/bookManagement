@@ -1,11 +1,13 @@
 package com.godigit.bookmybook.service;
 
+//import com.godigit.bookmybook.converstion.UserConverter;
 import com.godigit.bookmybook.converstion.UserConverter;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.model.UserModel;
 import com.godigit.bookmybook.repository.UserRepository;
 import com.godigit.bookmybook.util.TokenUtility;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -28,10 +31,18 @@ public class UserService {
         }
 
         UserModel saveModal = UserConverter.toEntity(userDTO);
+        UserModel saveUser = userRepository.save(saveModal);
         System.out.println(saveModal);
-
-        return UserConverter.toDTO(saveModal);
+        return UserConverter.toDTO(saveUser);
     }
+
+
+    public UserModel getUserModalById(Long id) {
+        UserModel userModel = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user Exist"));
+        log.debug(userModel.toString());
+        return userModel;
+    }
+
 
     public List<UserDTO> getAllUser(String token) {
         DataHolder decode = tokenUtility.decode(token);
@@ -102,5 +113,13 @@ public class UserService {
         }
 
         return getUserById(decode.getId());
+    }
+
+
+    public List<UserDTO> getAllUserCartItems(String token) {
+        DataHolder decode = tokenUtility.decode(token);
+
+        List<UserModel> allUserData = userRepository.findAll();
+        return allUserData.stream().map(UserConverter::toDTO).collect(Collectors.toList());
     }
 }
