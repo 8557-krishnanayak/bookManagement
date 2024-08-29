@@ -124,12 +124,11 @@ public class BookService {
     }
 
     public BookModel addBookImage(String token, long image_id, long bookId) {
-
+        checkAdmin(token);
         ImageModel image = imageService.getImageByID(token, image_id);
         BookModel book = getBookByID(bookId, token);
         book.setLogo(image);
         bookRepository.save(book);
-
         return book;
     }
 }
