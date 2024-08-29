@@ -15,11 +15,21 @@ public class AdminController {
     @Autowired
     UserService userService;
 
+    /**
+     * Purpose: This Api is to create for registration new admin user into system
+     *
+     * @param userDto Response coming form the frontend will go to handle in this controller class as this request.
+     *                so we are mapping this request into UserDTO POJO class by the @Request and then give the DTO to
+     *                the service to process.
+     *
+     * @return return the RequestEntity holding the value of the User details object along with Status code
+     */
     @PostMapping("/registration")
-    public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDto) {
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody UserDTO userDto) {
         userDto.setRole("Admin");
         return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
