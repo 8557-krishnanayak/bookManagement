@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godigit.bookmybook.dto.BookDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class BookModel {
     private long quantity;
 
     @ManyToMany(mappedBy = "bookModelList")
+    @JsonIgnore
     private List<WishListModel> wishList;
 
     public BookModel(BookDTO bookDTO) {

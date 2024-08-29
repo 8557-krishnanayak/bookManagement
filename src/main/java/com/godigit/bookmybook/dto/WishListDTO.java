@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,7 +17,10 @@ import java.util.List;
 public class WishListDTO {
 
     private long id;
-    private UserDTO user;
-    private List<BookDTO> bookDTOList;
+
+    private Long userId;
+
+    @Builder.Default
+    private List<BookDTO> bookDTOList = new ArrayList<>();
 
 }

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/wishlist")
 public class WishListController {
@@ -33,17 +35,17 @@ public class WishListController {
 
     @GetMapping("/show/user")
     public  ResponseEntity<?> getWishList(@RequestHeader String token){
-        WishListDTO gotWishList=wishListService.getWishList(token);
+        List<?> gotWishList=wishListService.getWishList(token);
       return new ResponseEntity<>(gotWishList,HttpStatus.FOUND);
     }
-//    @DeleteMapping("/Delete")
-//      public ResponseEntity<?> removeWishList(@RequestParam Long wishlist_id){
-//
-//    }
-//
+    @DeleteMapping("/Delete")
+      public ResponseEntity<?> removeWishList(@RequestParam Long wishlist_id,@RequestHeader String token){
+        return new ResponseEntity<>(wishListService.deleteWishListByID(wishlist_id,token),HttpStatus.OK);
+    }
+
 //      @DeleteMapping("/Delete/user")
 //        public ResponseEntity<?>removeWishListByUser(@RequestHeader String token,@RequestParam Long user_id){
-//
+//        //code here
 //
 //      }
 

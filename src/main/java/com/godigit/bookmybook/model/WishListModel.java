@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godigit.bookmybook.dto.BookDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,15 +21,14 @@ public class WishListModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = UserModel.class)
-    @JoinColumn(name = "user_id")
-    private UserModel user;
+
+    private Long userId;
 
     @Builder.Default
     @ManyToMany(cascade = CascadeType.ALL, targetEntity = BookModel.class)
     @JoinTable(
             name = "book_wishlist",
-            joinColumns = @JoinColumn(name = "cart_id"),
+            joinColumns = @JoinColumn(name = "wish_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private List<BookModel> bookModelList = new ArrayList<>();

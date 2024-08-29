@@ -1,16 +1,19 @@
 package com.godigit.bookmybook.dto;
 
 import com.godigit.bookmybook.model.UserModel;
+import com.godigit.bookmybook.model.WishListModel;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -36,4 +39,7 @@ public class UserDTO {
 
     private LocalDate registeredDate;
     private LocalDate updateDate;
+
+    @Builder.Default
+    private WishListDTO wishList = new WishListDTO();
 }

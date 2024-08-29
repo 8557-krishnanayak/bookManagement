@@ -17,10 +17,7 @@ public class WishListConvertor {
         listDTO.setBookDTOList(bookList);
         listDTO.setId(wishList.getId());
 
-        UserModel user = wishList.getUser();
-        UserDTO dto = UserConverter.toDTO(user);
-        listDTO.setUser(dto);
-
+        listDTO.setUserId(wishList.getUserId());
 
         return listDTO;
     }
@@ -28,18 +25,15 @@ public class WishListConvertor {
     public static WishListModel toEntity(WishListDTO listDTO) {
         WishListModel wishList = new WishListModel();
 
-        List<BookModel>bookModelList= listDTO.getBookDTOList()
+        List<BookModel> bookModelList = listDTO.getBookDTOList()
                 .stream().map(WishListConvertor::toBookEntity).toList();
 
 
         wishList.setBookModelList(bookModelList);
-
         wishList.setId(listDTO.getId());
+        Long userId = listDTO.getUserId();
+        wishList.setUserId(userId);
 
-        UserDTO user = listDTO.getUser();
-        UserModel userModal = UserConverter.toEntity(user);
-
-        wishList.setUser(userModal);
         return wishList;
     }
 

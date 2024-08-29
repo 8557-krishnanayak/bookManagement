@@ -21,6 +21,7 @@ public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     private String firstname;
@@ -41,9 +42,16 @@ public class UserModel {
     private LocalDate updateDate;
 
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "wish_id")
+    private WishListModel wishList;
+
     @PrePersist
     void preInsert() {
         if (this.role == null)
             this.role = "Customer";
+
+        if (this.wishList == null)
+            this.wishList = new WishListModel();
     }
 }

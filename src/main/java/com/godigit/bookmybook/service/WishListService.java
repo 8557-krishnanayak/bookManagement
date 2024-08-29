@@ -2,6 +2,7 @@ package com.godigit.bookmybook.service;
 
 import com.godigit.bookmybook.converstion.WishListConvertor;
 import com.godigit.bookmybook.dto.DataHolder;
+import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.dto.WishListDTO;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.UserModel;
@@ -39,10 +40,8 @@ public class WishListService {
     public WishListDTO createWishlist(String token, Long book_id) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long user_id = dataHolder.getId();
-
         BookModel bookModel = bookService.getBookByID(book_id, token);
-        WishListDTO addedWishList = addWishlist(user_id, bookModel);
-        return addedWishList;
+        return addWishlist(user_id, bookModel);
     }
 
     public WishListDTO addWishlist(Long user_id, BookModel bookModel) {
@@ -51,34 +50,46 @@ public class WishListService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
 
-        WishListModel wishListModel = new WishListModel(); // new
+        WishListModel wishListModel = user.getWishList() == null ? new WishListModel() : user.getWishList(); // new
 
-        wishListModel.setUser(user);
-        List<BookModel> bookModelList = new ArrayList<>();
-        bookModelList.add(bookModel);
-        wishListModel.setBookModelList(bookModelList);
+        wishListModel.setUserId(user.getId());
+        List<BookModel> bookWishList = wishListModel.getBookModelList() == null ? new ArrayList<>() : wishListModel.getBookModelList();
+
+
+        bookWishList.add(bookModel);
         WishListModel savedWishList = wishListRepository.save(wishListModel);
         return WishListConvertor.toDTO(savedWishList);
     }
 
-    public  WishListDTO getWishList(String token){
+    public List<?> getWishList(String token) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long userId = dataHolder.getId(); // user id
 
-        WishListModel wishListModel = wishListRepository
-                .findById(userId) //
-                .orElse(new WishListModel());
-        return WishListConvertor.toDTO(wishListModel);
+        UserDTO userById = userService.getUserById(userId);
+        long id = userById.getWishList().getId();
+        List<WishListModel> allById = wishListRepository.findAllById(id);
+        return allById;
     }
 
-//    public String removeWishList(Long wishlist_id){
-//
-//
-//    }
+    public String deleteWishListByID(Long wishlist_id,String token){
+        Optional<WishListModel> wishListModelOptional = wishListRepository.findById(wishlist_id);
+        DataHolder dataHolder = tokenUtility.decode(token);
+        Long user_id = dataHolder.getId();
+        if(wishListModelOptional.isPresent()){
+            WishListModel wishListModel = wishListModelOptional.get();
+            if (wishListModel.getUserId().equals(user_id)) {
+                wishListRepository.deleteById(wishlist_id);
+
+        }return "WishList removed successfully";}
+        else{
+            throw  new RuntimeException("no wishlist data is present");
+        }
+    }
 
 //    public String removeWishListByUser(String token,Long user_id){
 //        DataHolder dataHolder = tokenUtility.decode(token);
 //        Long userid = dataHolder.getId();
 //        WishListModel delete_book = deleteById(userid);
+//        //code here
 //    }
 }

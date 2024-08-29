@@ -6,6 +6,7 @@ import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.model.UserModel;
 import com.godigit.bookmybook.repository.UserRepository;
 import com.godigit.bookmybook.util.TokenUtility;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -29,9 +31,15 @@ public class UserService {
 
         UserModel saveModal = UserConverter.toEntity(userDTO);
         System.out.println(saveModal);
-        UserModel save = userRepository.save(saveModal);
+        System.out.println(saveModal.getId());
 
-        return UserConverter.toDTO(save);
+        UserModel save = userRepository.save(saveModal);
+        Long id = save.getId();
+        saveModal.getWishList().setUserId(id);
+
+
+        return UserConverter.toDTO(userRepository.save(saveModal));
+
     }
 
     public List<UserDTO> getAllUser(String token) {
@@ -59,7 +67,7 @@ public class UserService {
             userModel.setFirstname(userDTO.getLastname());
         if (userDTO.getEmail() != null)
             userModel.setEmail(userDTO.getEmail());
-        if(userDTO.getPassword() != null)
+        if (userDTO.getPassword() != null)
             userModel.setPassword(userDTO.getPassword());
 
         UserModel save = userRepository.save(userModel);
