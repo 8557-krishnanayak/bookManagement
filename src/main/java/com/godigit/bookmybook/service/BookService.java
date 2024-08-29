@@ -3,7 +3,9 @@ package com.godigit.bookmybook.service;
 import com.godigit.bookmybook.dto.BookDTO;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.model.BookModel;
+import com.godigit.bookmybook.model.ImageModel;
 import com.godigit.bookmybook.repository.BookRepository;
+import com.godigit.bookmybook.repository.ImageRepository;
 import com.godigit.bookmybook.util.TokenUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,11 @@ public class BookService {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    ImageService imageService;
+
+
 
     @Autowired
     TokenUtility tokenUtility;
@@ -68,7 +75,7 @@ public class BookService {
 
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
-
+        checkAdmin(token);
         BookModel book = getBookByID(id, token);
         if (bookDTO.getBookName() != null)
             book.setBookName(bookDTO.getBookName());
@@ -88,7 +95,6 @@ public class BookService {
     }
 
 
-
     //    TODO: Deleting book - only if the user  admin
     public String deleteBook(String token, long id) {
         checkAdmin(token);
@@ -97,9 +103,6 @@ public class BookService {
         return "Deleted the book with id : " + id;
     }
 
-
-
-
     public String changeBookPrice(String token, long bookId, double price) {
         checkAdmin(token);
         BookDTO updateDTO = BookDTO.builder().price(price).build();
@@ -107,11 +110,20 @@ public class BookService {
         return "Changed the price of the book with id " + bookId;
     }
 
-    public ResponseEntity<?> changeQuantityByToken(String token,Long book_id,int quantity) {
+    public ResponseEntity<?> changeQuantityByToken(String token, Long book_id, int quantity) {
         DataHolder dataHolder = tokenUtility.decode(token);
         String role = dataHolder.getRole();
-        if(!role.equalsIgnoreCase("Admin"))
+        if (!role.equalsIgnoreCase("Admin"))
             throw new RuntimeException("You are not authorized  :-) ");
-        return new ResponseEntity<>(updateBook(token,book_id, BookDTO.builder().quantity(quantity).build()),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(updateBook(token, book_id, BookDTO.builder().quantity(quantity).build()), HttpStatus.ACCEPTED);
+    }
+
+    public BookModel addBookImage(String token, long image_id, long bookId) {
+
+        ImageModel image = imageService.getImageByID(image_id);
+        BookModel book = getBookByID(bookId, token);
+        book.setLogo(image);
+        bookRepository.save(book);
+        return book;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,6 +25,11 @@ public class BookController {
     public ResponseEntity<?> createBook(@RequestHeader String token, @Valid @RequestBody BookDTO bookDTO) throws IOException {
 
         return new ResponseEntity<>(bookService.addBook(token, bookDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/addimage/{book_id}/{image_id}")
+    public ResponseEntity<?> addImage(@RequestHeader String token,@PathVariable long image_id,@PathVariable long book_id) throws IOException {
+        return new ResponseEntity<>(bookService.addBookImage(token,image_id,book_id),HttpStatus.FOUND);
     }
 
     //    TODO: Retrieving a particular book with id using this API

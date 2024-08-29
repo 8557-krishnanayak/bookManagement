@@ -1,6 +1,7 @@
 package com.godigit.bookmybook.dto;
 
 import com.godigit.bookmybook.model.BookModel;
+import com.godigit.bookmybook.model.ImageModel;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class BookDTO {
     @NotBlank(message = "Give a description about the book with min 200 characters")
     private String description;
 
-    private byte[] logo;
+    private ImageModel logo;
 
     private double price;
     private long quantity;

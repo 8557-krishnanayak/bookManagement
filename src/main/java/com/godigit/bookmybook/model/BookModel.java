@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.RequestPart;
 
 
 @Entity
@@ -24,9 +25,9 @@ public class BookModel {
     private String author;
     private String description;
 
-    @Column(name = "book_logo")
-//    @Lob
-    private byte[] logo;
+    @JoinColumn(name = "book_logo")
+    @OneToOne(cascade = CascadeType.ALL)
+    private ImageModel logo;
 
     private double price;
     private long quantity;
