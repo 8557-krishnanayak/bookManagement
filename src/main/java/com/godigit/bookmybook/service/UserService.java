@@ -31,7 +31,6 @@ public class UserService {
         System.out.println(saveModal);
         UserModel save = userRepository.save(saveModal);
 
-
         return UserConverter.toDTO(save);
     }
 
