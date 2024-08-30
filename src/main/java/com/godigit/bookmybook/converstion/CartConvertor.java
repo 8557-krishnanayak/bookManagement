@@ -43,7 +43,7 @@ public class CartConvertor {
             return null;
         BookDTO dto = new BookDTO();
 
-        dto.setBook_id(book.getId());
+        dto.setId(book.getId());
         dto.setBookName(book.getBookName());
         dto.setLogo(book.getLogo());
         dto.setPrice(book.getPrice());
@@ -61,7 +61,7 @@ public class CartConvertor {
             return null;
         BookModel book = new BookModel();
 
-        book.setId(Dto.getBook_id());
+        book.setId(Dto.getId());
         book.setBookName(Dto.getBookName());
         book.setLogo(Dto.getLogo());
         book.setPrice(Dto.getPrice());
