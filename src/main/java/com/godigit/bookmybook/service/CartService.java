@@ -7,6 +7,7 @@ import com.godigit.bookmybook.dto.BookDTO;
 import com.godigit.bookmybook.dto.CartDto;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.UserDTO;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.CartModel;
 import com.godigit.bookmybook.model.UserModel;
@@ -70,7 +71,7 @@ public class CartService {
 
     public String updateQuantity(String token, long cart_id, long update_quantity) {
 
-        CartModel required_Cart = cartRepo.findById(cart_id).orElseThrow(() -> new RuntimeException("Cart id doesn't exist!"));
+        CartModel required_Cart = cartRepo.findById(cart_id).orElseThrow(() -> new ResourceNotFoundException("Cart id doesn't exist!"));
         if (update_quantity > required_Cart.getQuantity())
             incrementQuantity(required_Cart, update_quantity);
         else
@@ -104,17 +105,15 @@ public class CartService {
         UserModel userModel = userService.getUserModalById(dataHolder.getId());
 
         List<CartModel> cart = userModel.getCart();
-        List<CartModel> userCartItems = new ArrayList<>();
-
-        for(CartModel c : cart){
-            userCartItems.add(c);
-        }
-        return userCartItems;
+//        List<CartModel> userCartItems = new ArrayList<>();
+//
+//        for(CartModel c : cart){
+//            userCartItems.add(c);
+//        }
+        return cart;
     }
 
 
-
-//    @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<?> getAllCartItems(String token) {
 
         if (isAdmin(token)) {
