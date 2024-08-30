@@ -1,6 +1,9 @@
 package com.godigit.bookmybook.service;
 
 import com.godigit.bookmybook.dto.DataHolder;
+import com.godigit.bookmybook.exception.ResourceAlreadyExistException;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
+import com.godigit.bookmybook.exception.UnauthorizedException;
 import com.godigit.bookmybook.model.ImageModel;
 import com.godigit.bookmybook.repository.ImageRepository;
 import com.godigit.bookmybook.util.TokenUtility;
@@ -24,7 +27,7 @@ public class ImageService {
 
     private void checkDuplication(MultipartFile logo)
     {
-        if(logo.getOriginalFilename()=="")
+        if(logo.getOriginalFilename().equals(""))
             throw new NullPointerException("Please upload a valid file");
         List<ImageModel> imageModels = imageRepository.findAll() .stream().filter(image->{
             return image.getImageName()
@@ -33,14 +36,14 @@ public class ImageService {
         }).toList();
 
         if(!imageModels.isEmpty())
-            throw new RuntimeException("Image already exists");
+            throw new ResourceAlreadyExistException("Image already exists");
     }
 
     private void checkAdmin(String token)
     {
         DataHolder dataHolder = tokenUtility.decode(token);
         if(!dataHolder.getRole().equalsIgnoreCase("admin"))
-            throw new RuntimeException("You are not authorized :-)");
+            throw new UnauthorizedException("You are not authorized :-)");
     }
     public ImageModel addImage(String token, MultipartFile logo) throws IOException,NullPointerException {
         checkAdmin(token);
@@ -56,7 +59,7 @@ public class ImageService {
 
     public ImageModel getImageByID(String token,long id){
         checkAdmin(token);
-        return imageRepository.findById(id).orElseThrow(()->new RuntimeException("Image doesn't exists :-)"));
+        return imageRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Image doesn't exists :-)"));
     }
 
     public String updateImage(String token, MultipartFile logo, long imageId) throws IOException {

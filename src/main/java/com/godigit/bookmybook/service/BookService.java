@@ -1,7 +1,12 @@
 package com.godigit.bookmybook.service;
 
+import com.godigit.bookmybook.converstion.BookConvertor;
 import com.godigit.bookmybook.dto.BookDTO;
 import com.godigit.bookmybook.dto.DataHolder;
+import com.godigit.bookmybook.exception.ForbiddenException;
+import com.godigit.bookmybook.exception.ResourceAlreadyExistException;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
+import com.godigit.bookmybook.exception.UnauthorizedException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.ImageModel;
 import com.godigit.bookmybook.repository.BookRepository;
@@ -30,41 +35,45 @@ public class BookService {
     public void checkAdmin(String token) {
         DataHolder dataHolder = tokenUtility.decode(token);
         if (!dataHolder.getRole().equalsIgnoreCase("admin"))
-            throw new RuntimeException("You are not authorized :-( ");
+            throw new ForbiddenException("You are not authorized :-( ");
     }
 
     private void checkUser(String token) {
         DataHolder dataHolder = tokenUtility.decode(token);
         if (!dataHolder.getRole().equalsIgnoreCase("admin") &&
                 !dataHolder.getRole().equalsIgnoreCase("customer"))
-            throw new RuntimeException("You are not registered..! :-( ");
+            throw new UnauthorizedException("You are not registered..! :-( ");
     }
 
     //    TODO : Adding book - if the user  admin
-    public ResponseEntity<?> addBook(String token, BookDTO bookDTO) throws IOException {
+    public BookDTO addBook(String token, BookDTO bookDTO) throws IOException {
         checkAdmin(token);
         List<BookModel> bookIn = bookRepository.findAll().stream().filter(book -> {
             return book.getBookName().equals(bookDTO.getBookName()) && book.getAuthor().equals(bookDTO.getAuthor());
         }).toList();
 
         if (!bookIn.isEmpty()) {
-            throw new RuntimeException("Book already exits ");
+            throw new ResourceAlreadyExistException("Book already exits ");
 
         } else {
             BookModel book = new BookModel(bookDTO);
-//            book.setLogo(logo.getBytes());
+            book.setDescription("a book written by "+book.getAuthor());
             bookRepository.save(book);
-            return new ResponseEntity<>(book, HttpStatus.ACCEPTED);
+            return new BookDTO(book) ;
         }
     }
 
     //    TODO: Retrieving book by Id - only if the user  admin
-    public BookModel getBookByID(Long id, String token) {
+    public BookDTO getBookByID(Long id, String token) {
         checkUser(token);
-        BookModel book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
-        return book;
+        BookModel book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+        return new BookDTO(book);
     }
 
+    public BookModel getBookModel(Long id,String token){
+        checkUser(token);
+        return bookRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Book doest exists"));
+    }
     //    TODO: Retrieving all the books -  registered users
     public List<BookModel> getAllBooks(String token) {
         checkUser(token);
@@ -74,7 +83,9 @@ public class BookService {
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
 
-        BookModel book = getBookByID(id, token);
+        BookDTO bookUpdate = getBookByID(id, token);
+        BookModel book = new BookModel(bookUpdate);
+
         if (bookDTO.getBookName() != null)
             book.setBookName(bookDTO.getBookName());
         if (bookDTO.getAuthor() != null)
@@ -96,7 +107,7 @@ public class BookService {
     //    TODO: Deleting book - only if the user  admin
     public String deleteBook(String token, long id) {
         checkAdmin(token);
-        BookModel delete_book = getBookByID(id, token);
+        BookDTO delete_book = getBookByID(id, token);
         bookRepository.deleteById(delete_book.getId());
         return "Deleted the book with id : " + id;
     }
@@ -109,26 +120,28 @@ public class BookService {
     }
 
     public String changeBookQuantity(String token, long book_id, int quantity) {
-        BookModel bookModel = getBookByID(book_id, token);
+
+        BookModel bookModel = getBookModel(book_id,token);
         bookModel.setQuantity(quantity);
         bookRepository.save(bookModel);
         return "Changed book quantity for book id " + book_id;
     }
 
-    public ResponseEntity<?> changeQuantityByToken(String token, Long book_id, int quantity) {
+    public String changeQuantityByToken(String token, Long book_id, int quantity) {
         DataHolder dataHolder = tokenUtility.decode(token);
         String role = dataHolder.getRole();
         if (!role.equalsIgnoreCase("Admin"))
-            throw new RuntimeException("You are not authorized  :-) ");
-        return new ResponseEntity<>(changeBookQuantity(token, book_id, quantity), HttpStatus.ACCEPTED);
+            throw new ForbiddenException("You are not authorized  :-) ");
+        return changeBookQuantity(token, book_id, quantity);
     }
 
-    public BookModel addBookImage(String token, long image_id, long bookId) {
+    public BookDTO addBookImage(String token, long image_id, long bookId) {
         checkAdmin(token);
         ImageModel image = imageService.getImageByID(token, image_id);
-        BookModel book = getBookByID(bookId, token);
+        BookDTO bookDTO = getBookByID(bookId, token);
+        BookModel book = new BookModel(bookDTO);
         book.setLogo(image);
         bookRepository.save(book);
-        return book;
+        return new BookDTO(book);
     }
 }

@@ -23,8 +23,8 @@ public class BookDTO {
     @NotBlank(message = "Enter a valid author name")
     private String author;
 
-    @NotBlank(message = "Give a description about the book with min 200 characters")
-    private String description;
+
+    private String description ;
 
     private ImageModel logo;
 
