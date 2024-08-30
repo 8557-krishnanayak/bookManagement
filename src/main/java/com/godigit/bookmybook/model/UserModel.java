@@ -45,4 +45,8 @@ public class UserModel {
     @JsonManagedReference(value = "cartref")
     private List<CartModel> cart;
 
+    @OneToMany(mappedBy = "user", fetch=FetchType.LAZY)
+    private List<OrderModel> orders;
+
+
 }

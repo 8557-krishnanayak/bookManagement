@@ -24,9 +24,9 @@ public class OrderDTO {
     private double price;
     private int quantity;
 
-    private Address address;
-    private UserModel user;
-    private List<String> books;
+    private AddressDTO address;
+    private UserDTO user;
+    private List<BookDTO> books;
     private boolean cancel;
 
 }

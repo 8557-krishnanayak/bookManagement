@@ -1,12 +1,13 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godigit.bookmybook.dto.BookDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.aop.target.LazyInitTargetSource;
 import org.springframework.web.bind.annotation.RequestPart;
+
+import java.util.List;
 
 
 @Entity
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"orders"})
 public class BookModel {
 
     @Id
@@ -31,6 +33,11 @@ public class BookModel {
 
     private double price;
     private long quantity;
+
+    @ManyToMany(mappedBy = "books")
+    @JsonIgnore
+    private List<OrderModel> orders;
+
 
     public BookModel(BookDTO bookDTO) {
         this.bookName = bookDTO.getBookName();

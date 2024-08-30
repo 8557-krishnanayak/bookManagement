@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.controller;
 
+import com.godigit.bookmybook.dto.AddressDTO;
 import com.godigit.bookmybook.dto.OrderDTO;
 import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.model.OrderModel;
@@ -28,8 +29,9 @@ public class OrderController {
      * **/
 
     @PostMapping("/placeOrder")
-    public ResponseEntity<?> placeOrder(@RequestHeader String token, @RequestBody OrderDTO orderDTO){
-        return new ResponseEntity<>(orderService.placeOrderByToken(orderDTO, token), HttpStatus.ACCEPTED);
+    public ResponseEntity<?> placeOrder(@RequestHeader String token,@RequestBody AddressDTO addressDTO){
+        System.err.println(addressDTO);
+        return new ResponseEntity<>(orderService.placeOrderByToken(token, addressDTO), HttpStatus.ACCEPTED);
 
     }
 
