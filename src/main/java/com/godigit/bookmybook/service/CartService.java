@@ -7,6 +7,7 @@ import com.godigit.bookmybook.dto.BookDTO;
 import com.godigit.bookmybook.dto.CartDto;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.UserDTO;
+import com.godigit.bookmybook.exception.BookLimitException;
 import com.godigit.bookmybook.exception.ResourceNotFoundException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.CartModel;
@@ -19,7 +20,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
@@ -49,16 +49,31 @@ public class CartService {
         UserModel userModel = userService.getUserModalById(dataHolder.getId());
         BookModel bookModel= bookService.getBookByID(book_id,token);
 
-        CartModel cart = new CartModel();
+        if(bookModel.getQuantity()>=1 && bookModel!=null) {
 
-        cart.setUsers(userModel);
-        cart.setBook(bookModel);
-        cart.setQuantity(1);
-        cart.setTotalPrice((long)bookModel.getPrice());
+            List<CartModel> existingUsers = cartRepo.findAll();
+            for (CartModel cart : existingUsers) {
+                if ((cart.getUsers().getId().equals(dataHolder.getId())) && (cart.getBook().getId() == book_id)) {
+                    cart.setQuantity(cart.getQuantity() + 1);
+                    cart.setTotalPrice((long) (cart.getQuantity() * bookModel.getPrice()));
 
-        CartModel cartModel= cartRepo.save(cart);
-        return CartConvertor.toDTO(cartModel);
+                    cartRepo.save(cart);
+                    return CartConvertor.toDTO(cart);
+                }
+            }
 
+                CartModel cart = new CartModel();
+
+                cart.setUsers(userModel);
+                cart.setBook(bookModel);
+                cart.setQuantity(1);
+                cart.setTotalPrice((long) bookModel.getPrice());
+
+                CartModel cartModel = cartRepo.save(cart);
+                return CartConvertor.toDTO(cartModel);
+        }else throw new ResourceNotFoundException("Invalid Book ID!");
+
+//        else throw new BookLimitException("There is no stock for this book product: "+book_id);
     }
 
 

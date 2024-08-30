@@ -20,13 +20,6 @@ public class CartModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    private UserModel user;
-//
-//
-//    @ManyToOne
-//    private BookModel book;
-
     private long quantity;
     private long totalPrice;
 
