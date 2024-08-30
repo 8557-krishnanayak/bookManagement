@@ -45,7 +45,7 @@ public class BookService {
 
     //    TODO: Retrieving book by Id - only if the user  admin
     public BookModel getBookByID(Long id, String token) {
-        checkAdmin(token);
+//        checkAdmin(token);
         BookModel book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
         return book;
     }

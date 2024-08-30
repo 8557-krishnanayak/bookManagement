@@ -42,4 +42,8 @@ public class UserDTO {
 
     @Builder.Default
     private WishListDTO wishList = new WishListDTO();
+
+    @Builder.Default
+    private FeedBackDTO feedBack=new FeedBackDTO();
+
 }

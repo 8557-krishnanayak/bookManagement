@@ -3,10 +3,7 @@ package com.godigit.bookmybook.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godigit.bookmybook.dto.BookDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"wishList"})
 public class BookModel {
 
     @Id
@@ -36,6 +34,12 @@ public class BookModel {
     @ManyToMany(mappedBy = "bookModelList")
     @JsonIgnore
     private List<WishListModel> wishList;
+
+    @OneToMany(mappedBy = "book")
+    @JsonIgnore
+    private List<FeedBackModel> feedBack;
+
+
 
     public BookModel(BookDTO bookDTO) {
         this.bookName = bookDTO.getBookName();

@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godigit.bookmybook.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,6 +49,9 @@ public class UserModel {
     @JoinColumn(name = "wish_id")
     private WishListModel wishList;
 
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
+    private List<FeedBackModel> feedbacks;
+
     @PrePersist
     void preInsert() {
         if (this.role == null)
@@ -53,5 +59,9 @@ public class UserModel {
 
         if (this.wishList == null)
             this.wishList = new WishListModel();
+
+        if (this.feedbacks == null) {
+            this.feedbacks = new ArrayList<>();
+        }
     }
 }

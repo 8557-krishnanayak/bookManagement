@@ -71,25 +71,18 @@ public class WishListService {
         return allById;
     }
 
-    public String deleteWishListByID(Long wishlist_id,String token){
-        Optional<WishListModel> wishListModelOptional = wishListRepository.findById(wishlist_id);
-        DataHolder dataHolder = tokenUtility.decode(token);
-        Long user_id = dataHolder.getId();
-        if(wishListModelOptional.isPresent()){
-            WishListModel wishListModel = wishListModelOptional.get();
-            if (wishListModel.getUserId().equals(user_id)) {
-                wishListRepository.deleteById(wishlist_id);
+    public String removeProduct(Long book_id, String token) {
+        DataHolder dataHolder = tokenUtility.decode(token); // user_id
 
-        }return "WishList removed successfully";}
-        else{
-            throw  new RuntimeException("no wishlist data is present");
-        }
+        BookModel bookModel = bookService.getBookByID(book_id, token);
+//                .orElseThrow(() -> new RuntimeException("product is not wishlisted"));
+
+        System.out.println(bookModel);
+//        wishListRepository.deleteById(bookModel.getId());
+        wishListRepository.deleteByUserIdAndBookId(dataHolder.getId(), bookModel);
+        return "Product with " + book_id + " has been removed from Your Book ";
+
     }
 
-//    public String removeWishListByUser(String token,Long user_id){
-//        DataHolder dataHolder = tokenUtility.decode(token);
-//        Long userid = dataHolder.getId();
-//        WishListModel delete_book = deleteById(userid);
-//        //code here
-//    }
+
 }

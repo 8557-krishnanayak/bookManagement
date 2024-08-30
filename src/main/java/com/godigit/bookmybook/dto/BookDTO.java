@@ -1,11 +1,15 @@
 package com.godigit.bookmybook.dto;
 
 import com.godigit.bookmybook.model.BookModel;
+import com.godigit.bookmybook.model.FeedBackModel;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +30,7 @@ public class BookDTO {
 
     private double price;
     private long quantity;
+    private List<FeedBackDTO>feedBack=new ArrayList<>();
 
     public BookDTO(BookModel book) {
         this.bookName = book.getBookName();

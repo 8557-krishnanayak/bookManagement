@@ -38,15 +38,10 @@ public class WishListController {
         List<?> gotWishList=wishListService.getWishList(token);
       return new ResponseEntity<>(gotWishList,HttpStatus.FOUND);
     }
-    @DeleteMapping("/Delete")
-      public ResponseEntity<?> removeWishList(@RequestParam Long wishlist_id,@RequestHeader String token){
-        return new ResponseEntity<>(wishListService.deleteWishListByID(wishlist_id,token),HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> removeWishList(@PathVariable("id") Long book_id,@RequestHeader String token){
+        return new ResponseEntity<>(wishListService.removeProduct(book_id,token), HttpStatus.FOUND);
     }
 
-//      @DeleteMapping("/Delete/user")
-//        public ResponseEntity<?>removeWishListByUser(@RequestHeader String token,@RequestParam Long user_id){
-//        //code here
-//
-//      }
 
 }

@@ -25,11 +25,22 @@ public class WishListModel {
     private Long userId;
 
     @Builder.Default
-    @ManyToMany(cascade = CascadeType.ALL, targetEntity = BookModel.class)
+    @ManyToMany(cascade = CascadeType.PERSIST, targetEntity = BookModel.class)
     @JoinTable(
             name = "book_wishlist",
             joinColumns = @JoinColumn(name = "wish_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
+    @JsonIgnore
     private List<BookModel> bookModelList = new ArrayList<>();
+
+//@Builder.Default
+//@OneToMany(cascade = CascadeType.PERSIST, targetEntity = BookModel.class)
+//@JoinTable(
+//        name = "book_wishlist",
+//        joinColumns = @JoinColumn(name = "wish_id"),
+//        inverseJoinColumns = @JoinColumn(name = "book_id")
+//)
+//@JsonIgnore
+//private List<BookModel> bookModelList = new ArrayList<>();
 }
