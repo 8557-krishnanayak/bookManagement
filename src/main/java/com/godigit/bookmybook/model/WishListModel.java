@@ -1,12 +1,10 @@
 package com.godigit.bookmybook.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godigit.bookmybook.dto.BookDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,30 +15,20 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(name = "WishList")
+@ToString(exclude = {"user", "book"})
 public class WishListModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private Long userId;
-
-    @Builder.Default
-    @ManyToMany(cascade = CascadeType.PERSIST, targetEntity = BookModel.class)
-    @JoinTable(
-            name = "book_wishlist",
-            joinColumns = @JoinColumn(name = "wish_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "wish_ref")
     @JsonIgnore
-    private List<BookModel> bookModelList = new ArrayList<>();
+    private UserModel user;
 
-//@Builder.Default
-//@OneToMany(cascade = CascadeType.PERSIST, targetEntity = BookModel.class)
-//@JoinTable(
-//        name = "book_wishlist",
-//        joinColumns = @JoinColumn(name = "wish_id"),
-//        inverseJoinColumns = @JoinColumn(name = "book_id")
-//)
-//@JsonIgnore
-//private List<BookModel> bookModelList = new ArrayList<>();
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "book_id")
+    @JsonIgnore
+    private BookModel book;
 }

@@ -31,8 +31,7 @@ public class BookModel {
     private double price;
     private long quantity;
 
-    @ManyToMany(mappedBy = "bookModelList")
-    @JsonIgnore
+    @OneToMany(mappedBy = "book")
     private List<WishListModel> wishList;
 
     @OneToMany(mappedBy = "book")

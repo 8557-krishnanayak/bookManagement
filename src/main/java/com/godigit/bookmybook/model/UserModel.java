@@ -1,6 +1,7 @@
 package com.godigit.bookmybook.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.godigit.bookmybook.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,11 +46,13 @@ public class UserModel {
     private LocalDate updateDate;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "wish_id")
-    private WishListModel wishList;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
+    @JsonManagedReference(value = "wish_ref")
+    @JsonIgnore
+    private List<WishListModel> wishList;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
+    @JsonIgnore
     private List<FeedBackModel> feedbacks;
 
     @PrePersist
@@ -58,7 +61,7 @@ public class UserModel {
             this.role = "Customer";
 
         if (this.wishList == null)
-            this.wishList = new WishListModel();
+            this.wishList = new ArrayList<>();
 
         if (this.feedbacks == null) {
             this.feedbacks = new ArrayList<>();

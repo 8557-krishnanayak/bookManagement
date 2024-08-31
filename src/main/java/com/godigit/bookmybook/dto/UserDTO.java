@@ -1,5 +1,6 @@
 package com.godigit.bookmybook.dto;
 
+import com.godigit.bookmybook.model.FeedBackModel;
 import com.godigit.bookmybook.model.UserModel;
 import com.godigit.bookmybook.model.WishListModel;
 import jakarta.persistence.PrePersist;
@@ -12,6 +13,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -41,9 +44,9 @@ public class UserDTO {
     private LocalDate updateDate;
 
     @Builder.Default
-    private WishListDTO wishList = new WishListDTO();
+    private List<WishListDTO> wishList = new ArrayList<>();
 
     @Builder.Default
-    private FeedBackDTO feedBack=new FeedBackDTO();
+    private List<FeedBackDTO> feedbacks = new ArrayList<>();
 
 }

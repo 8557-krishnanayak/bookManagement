@@ -18,9 +18,7 @@ public class WishListDTO {
 
     private long id;
 
-    private Long userId;
+//    private UserDTO user;
 
-    @Builder.Default
-    private List<BookDTO> bookDTOList = new ArrayList<>();
-
+    private BookDTO book;
 }

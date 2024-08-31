@@ -2,6 +2,7 @@ package com.godigit.bookmybook.dto;
 
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.FeedBackModel;
+import com.godigit.bookmybook.model.WishListModel;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,9 @@ public class BookDTO {
 
     private double price;
     private long quantity;
-    private List<FeedBackDTO>feedBack=new ArrayList<>();
+
+    private List<WishListModel> wishList;
+    private List<FeedBackDTO> feedBack = new ArrayList<>();
 
     public BookDTO(BookModel book) {
         this.bookName = book.getBookName();

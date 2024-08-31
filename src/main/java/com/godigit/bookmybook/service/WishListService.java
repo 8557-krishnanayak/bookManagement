@@ -11,6 +11,7 @@ import com.godigit.bookmybook.repository.BookRepository;
 import com.godigit.bookmybook.repository.UserRepository;
 import com.godigit.bookmybook.repository.WishListRepository;
 import com.godigit.bookmybook.util.TokenUtility;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,46 +41,38 @@ public class WishListService {
     public WishListDTO createWishlist(String token, Long book_id) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long user_id = dataHolder.getId();
+
+
+        Optional<WishListModel> existingWishList = wishListRepository.findByUserIdAndBookId(user_id, book_id);
+        if (existingWishList.isPresent()) {
+            throw new RuntimeException("Wishlist entry already exists");
+        }
         BookModel bookModel = bookService.getBookByID(book_id, token);
-        return addWishlist(user_id, bookModel);
-    }
-
-    public WishListDTO addWishlist(Long user_id, BookModel bookModel) {
-
         UserModel user = userRepository.findById(user_id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        WishListModel wish_list = WishListModel.builder().book(bookModel).user(user).build();
 
-        WishListModel wishListModel = user.getWishList() == null ? new WishListModel() : user.getWishList(); // new
+        WishListModel wish_save = wishListRepository.save(wish_list);
 
-        wishListModel.setUserId(user.getId());
-        List<BookModel> bookWishList = wishListModel.getBookModelList() == null ? new ArrayList<>() : wishListModel.getBookModelList();
-
-
-        bookWishList.add(bookModel);
-        WishListModel savedWishList = wishListRepository.save(wishListModel);
-        return WishListConvertor.toDTO(savedWishList);
+        return WishListConvertor.toDTO(wish_save);
     }
 
     public List<?> getWishList(String token) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long userId = dataHolder.getId(); // user id
 
-        UserDTO userById = userService.getUserById(userId);
-        long id = userById.getWishList().getId();
-        List<WishListModel> allById = wishListRepository.findAllById(id);
-        return allById;
+        UserDTO userDTO = userService.getUserById(userId);
+
+        return userDTO.getWishList();
     }
 
     public String removeProduct(Long book_id, String token) {
         DataHolder dataHolder = tokenUtility.decode(token); // user_id
+        Long user_id = dataHolder.getId();
 
-        BookModel bookModel = bookService.getBookByID(book_id, token);
-//                .orElseThrow(() -> new RuntimeException("product is not wishlisted"));
+        wishListRepository.deleteByUserIdAndBookId(user_id, book_id);
 
-        System.out.println(bookModel);
-//        wishListRepository.deleteById(bookModel.getId());
-        wishListRepository.deleteByUserIdAndBookId(dataHolder.getId(), bookModel);
         return "Product with " + book_id + " has been removed from Your Book ";
 
     }

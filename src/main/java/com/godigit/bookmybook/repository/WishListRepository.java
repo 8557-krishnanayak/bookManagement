@@ -8,15 +8,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WishListRepository extends JpaRepository<WishListModel, Long> {
     List<WishListModel> findAllById(Long id);
 
-    //void deleteByBookId(Long id);
     @Modifying
     @Transactional
-    @Query("DELETE FROM WishListModel w WHERE w.userId = :userId AND :book MEMBER OF w.bookModelList")
-    void deleteByUserIdAndBookId(Long userId, BookModel book);
+    @Query("DELETE FROM WishListModel w WHERE w.user.id = :userId AND w.book.id = :bookId")
+    void deleteByUserIdAndBookId(Long userId, Long bookId);
 
-
+    Optional<WishListModel> findByUserIdAndBookId(Long userId, Long bookId);
 }

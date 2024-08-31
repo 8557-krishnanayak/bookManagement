@@ -34,11 +34,10 @@ public class UserService {
         System.out.println(saveModal.getId());
 
         UserModel save = userRepository.save(saveModal);
-        Long id = save.getId();
-        saveModal.getWishList().setUserId(id);
 
 
-        return UserConverter.toDTO(userRepository.save(saveModal));
+
+        return UserConverter.toDTO(save);
 
     }
 
