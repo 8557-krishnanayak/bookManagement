@@ -45,7 +45,8 @@ public class OrderModel {
     @JoinTable(
             name = "order_books",
             joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
     private List<BookModel> books;
 
 

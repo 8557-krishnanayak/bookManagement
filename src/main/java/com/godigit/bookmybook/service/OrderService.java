@@ -31,49 +31,30 @@ public class OrderService {
 
     public OrderModel placeOrder(AddressDTO addressDTO, long userId, String token) {
         UserModel userModel = userService.getUserModalById(userId);
-
         List<CartModel> cart_details = userModel.getCart();
-        System.err.println(cart_details);// all cart of user
-        System.err.println(addressDTO);
         List<BookModel> books = cart_details.stream().map(CartModel::getBook).toList();
-
-
-
         long price=0;
         int quantity=0;
+        int totalquantity=0;
 
         for(CartModel cart:cart_details){
             quantity+=cart.getQuantity();
+            totalquantity+=quantity;
             bookService.changeBookQuantity(token,cart.getBook().getId(),  ((int) cart.getBook().getQuantity()-quantity));
             price+= cart.getTotalPrice() * cart.getQuantity();
-
+            quantity=0;
         }
-        System.err.println(price);
-        System.err.println(quantity);
-        System.err.println(books);
-
         Address add = new Address(addressDTO);
-
         OrderModel orderModel = new OrderModel();
         orderModel.setBooks(books);
         orderModel.setUser(userModel);
         orderModel.setAddress(add);
-        orderModel.setQuantity(quantity);
+        orderModel.setQuantity(totalquantity);
         orderModel.setPrice(price);
         orderRepo.save(orderModel);
-//        cart_details.stream().map(c->{
-//            bookService.changeBookQuantity(token,c.getBook().getId(), (int)(c.getBook().getQuantity()-c.getQuantity()));
-//            return null;
-//        });
         cartService.removeByUserId(token);
-
-
-
-
         return orderModel;
     }
-
-
 
 
     public OrderModel placeOrderByToken(String token, AddressDTO addressDTO) {
@@ -89,6 +70,13 @@ public class OrderService {
         OrderModel orderModel=orderRepo.findById(orderId).orElseThrow(()->new RuntimeException("Order doesn't exists"));
         orderModel.setCancel(true);
         orderRepo.save(orderModel);
+        for (BookModel book : orderModel.getBooks()) {
+            int quantity=orderModel.getQuantity();
+            long bookId = book.getId();
+            System.out.println(book.getQuantity());
+            bookService.changeBookQuantity(token, bookId, (int) (book.getQuantity()+quantity));
+        }
+
     }
 
 
