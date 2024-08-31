@@ -1,10 +1,13 @@
 package com.godigit.bookmybook.service;
 
 import com.godigit.bookmybook.dto.*;
+import com.godigit.bookmybook.exception.InvalidCustomerException;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
 import com.godigit.bookmybook.model.*;
 import com.godigit.bookmybook.repository.OrderRepo;
 import com.godigit.bookmybook.util.TokenUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataLocationNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,14 +63,14 @@ public class OrderService {
     public OrderModel placeOrderByToken(String token, AddressDTO addressDTO) {
         DataHolder decode = tokenUtility.decode(token);
         if (!decode.getRole().equalsIgnoreCase("customer")) {
-            throw new RuntimeException("he/she is not a customer");
+            throw new InvalidCustomerException("he/she is not a customer");
         }
         return placeOrder(addressDTO,decode.getId(),token);
 
     }
 
     public void cancelOrderById(String token, long orderId) {
-        OrderModel orderModel=orderRepo.findById(orderId).orElseThrow(()->new RuntimeException("Order doesn't exists"));
+        OrderModel orderModel=orderRepo.findById(orderId).orElseThrow(()->new ResourceNotFoundException("Order doesn't exists"));
         orderModel.setCancel(true);
         orderRepo.save(orderModel);
         for (BookModel book : orderModel.getBooks()) {
@@ -84,7 +87,7 @@ public class OrderService {
 
         DataHolder decode = tokenUtility.decode(token);
         if (decode.getRole().equalsIgnoreCase("customer")) {
-            throw new RuntimeException("no orders found");
+            throw new ResourceNotFoundException("no orders found");
         }
 
         return orderRepo.findByCancel(cancel);
@@ -95,7 +98,7 @@ public class OrderService {
     public List<OrderModel> getAllOrdersForUser(String token) {
         DataHolder decode = tokenUtility.decode(token);
         if (!decode.getRole().equalsIgnoreCase("customer")) {
-            throw new RuntimeException("no orders found");
+            throw new ResourceNotFoundException("no orders found");
         }
 
         return orderRepo.findByUserId(decode.getId());
@@ -103,5 +106,4 @@ public class OrderService {
 
     }
 
-//    order-id,
 }
