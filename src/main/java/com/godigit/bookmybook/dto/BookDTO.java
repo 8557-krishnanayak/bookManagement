@@ -32,7 +32,6 @@ public class BookDTO {
     private long quantity;
 
     public BookDTO(BookModel book) {
-        this.id = book.getId();
         this.bookName = book.getBookName();
         this.author = book.getAuthor();
         this.description = book.getDescription();

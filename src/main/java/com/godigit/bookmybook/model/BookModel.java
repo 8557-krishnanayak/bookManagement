@@ -33,13 +33,11 @@ public class BookModel {
     private long quantity;
 
     public BookModel(BookDTO bookDTO) {
-
         this.bookName = bookDTO.getBookName();
         this.author = bookDTO.getAuthor();
         this.description = bookDTO.getDescription();
         this.logo = bookDTO.getLogo();
         this.price = bookDTO.getPrice();
         this.quantity = bookDTO.getQuantity();
-
     }
 }

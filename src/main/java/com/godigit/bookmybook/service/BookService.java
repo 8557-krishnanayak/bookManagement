@@ -103,7 +103,6 @@ public class BookService {
         return "Updated the book with id :" + id;
     }
 
-
     //    TODO: Deleting book - only if the user  admin
     public String deleteBook(String token, long id) {
         checkAdmin(token);

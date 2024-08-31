@@ -11,6 +11,7 @@ import com.godigit.bookmybook.model.UserModel;
 import com.godigit.bookmybook.repository.UserRepository;
 import com.godigit.bookmybook.service.interfaceimp.UserServiceInterface;
 import com.godigit.bookmybook.util.TokenUtility;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,12 @@ public class UserService implements UserServiceInterface {
         UserModel save = userRepository.save(saveModal);
 
         return UserConverter.toDTO(save);
+    }
+
+    public UserModel getUserModalById(Long id) {
+        UserModel userModel = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No such user Exist"));
+//        log.debug(userModel.toString());
+        return userModel;
     }
 
     /**
