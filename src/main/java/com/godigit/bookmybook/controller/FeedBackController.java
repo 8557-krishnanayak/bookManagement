@@ -45,4 +45,11 @@ public class FeedBackController {
     public ResponseEntity<?> getUser() {
         return new ResponseEntity<>(userRepository.findById(1l).orElse(null), HttpStatus.OK);
     }
+
+    @PutMapping
+    public ResponseEntity<FeedBackDTO> updateFeedBack(@RequestHeader String token, @RequestParam Long feedback_id, @RequestBody FeedBackDTO feedBackDTO) {
+        FeedBackDTO updatedFeedBack = feedBackService.updateFeedBack(token, feedback_id, feedBackDTO);
+        return new ResponseEntity<>(updatedFeedBack, HttpStatus.OK);
+    }
+
 }

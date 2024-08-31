@@ -15,13 +15,13 @@ public class FeedbackConverter {
         DTO.setComments(feedBack.getComments());
         DTO.setId(feedBack.getId());
         DTO.setRating(feedBack.getRating());
-        BookModel book = feedBack.getBook();
-        BookDTO bookDto = WishListConvertor.toBookDto(book);
-        UserModel user = feedBack.getUser();
-        UserDTO userDto = UserConverter.toDTO(user);
-
-        DTO.setUser(userDto);
-        DTO.setBook(bookDto);
+//        BookModel book = feedBack.getBook();
+//        BookDTO bookDto = WishListConvertor.toBookDto(book);
+//        UserModel user = feedBack.getUser();
+//        UserDTO userDto = UserConverter.toDTO(user);
+//
+//        DTO.setUser(userDto);
+//        DTO.setBook(bookDto);
 
 
 //        List<UserDTO> user = feedBack.getUserModel().stream().map(UserConverter::toDTO).toList();
@@ -39,14 +39,14 @@ public class FeedbackConverter {
         feedBack.setId(DTO.getId());
         feedBack.setRating(DTO.getRating());
 
-        BookDTO bookDTO = DTO.getBook();
-        BookModel bookModel = WishListConvertor.toBookEntity(bookDTO);
-        feedBack.setBook(bookModel);
-
-        UserDTO user = DTO.getUser();
-        UserModel userModel = UserConverter.toEntity(user);
-
-        feedBack.setUser(userModel);
+//        BookDTO bookDTO = DTO.getBook();
+//        BookModel bookModel = WishListConvertor.toBookEntity(bookDTO);
+//        feedBack.setBook(bookModel);
+//
+//        UserDTO user = DTO.getUser();
+//        UserModel userModel = UserConverter.toEntity(user);
+//
+//        feedBack.setUser(userModel);
 
 //        feedBack.setUserModel(user);
 

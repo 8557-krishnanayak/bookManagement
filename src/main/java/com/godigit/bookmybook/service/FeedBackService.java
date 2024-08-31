@@ -65,4 +65,23 @@ public class FeedBackService {
         List<FeedBackModel> feedBackDTOList = feedBackRepository.findAll();
         return feedBackDTOList;
     }
+    public FeedBackDTO updateFeedBack(String token, Long feedbackId, FeedBackDTO feedbackDTO) {
+        DataHolder dataHolder = tokenUtility.decode(token);
+        Long userId = dataHolder.getId();
+
+        FeedBackModel feedback = feedBackRepository.findById(feedbackId)
+                .orElseThrow(() -> new RuntimeException("Feedback not found"));
+
+        if (!feedback.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Unauthorized to update this feedback");
+        }
+
+        feedback.setComments(feedbackDTO.getComments());
+        feedback.setRating(feedbackDTO.getRating());
+
+        FeedBackModel updatedFeedback = feedBackRepository.save(feedback);
+
+        return FeedbackConverter.toDTO(updatedFeedback);
+    }
+
 }
