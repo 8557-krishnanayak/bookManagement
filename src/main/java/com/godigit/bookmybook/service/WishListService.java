@@ -47,7 +47,7 @@ public class WishListService {
         if (existingWishList.isPresent()) {
             throw new RuntimeException("Wishlist entry already exists");
         }
-        BookModel bookModel = bookService.getBookByID(book_id, token);
+        BookModel bookModel = bookService.getBookModel(book_id, token);
         UserModel user = userRepository.findById(user_id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

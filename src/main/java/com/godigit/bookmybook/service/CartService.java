@@ -47,7 +47,7 @@ public class CartService {
 
         DataHolder dataHolder=tokenUtility.decode(token);
         UserModel userModel = userService.getUserModalById(dataHolder.getId());
-        BookModel bookModel= bookService.getBookByID(book_id,token);
+        BookModel bookModel= bookService.getBookModel(book_id,token);
 
         if(bookModel.getQuantity()>=1 && bookModel!=null) {
 

@@ -33,7 +33,7 @@ public class FeedBackService {
     public FeedBackDTO createFeedBack(String token, Long bookId, FeedBackDTO feedbackDTO) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long userId = dataHolder.getId();
-        BookModel bookModel = bookService.getBookByID(bookId, token);
+        BookModel bookModel = bookService.getBookModel(bookId, token);
 
         return addFeedBack(userId, bookModel, feedbackDTO);
     }
