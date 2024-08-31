@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"wishList"})
+@ToString(exclude = {"wishList", "orders"})
 public class BookModel {
 
     @Id
@@ -44,6 +44,11 @@ public class BookModel {
     @JsonIgnore
     private List<FeedBackModel> feedBack;
 
+
+
+    @ManyToMany(mappedBy = "books")
+    @JsonIgnore
+    private List<OrderModel> orders;
 
 
     public BookModel(BookDTO bookDTO) {

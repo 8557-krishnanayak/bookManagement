@@ -45,11 +45,11 @@ public class CartService {
 
     public CartDto addToCart(String token, long book_id) {
 
-        DataHolder dataHolder=tokenUtility.decode(token);
+        DataHolder dataHolder = tokenUtility.decode(token);
         UserModel userModel = userService.getUserModalById(dataHolder.getId());
         BookModel bookModel= bookService.getBookModel(book_id,token);
 
-        if(bookModel.getQuantity()>=1 && bookModel!=null) {
+        if (bookModel.getQuantity() >= 1 && bookModel != null) {
 
             List<CartModel> existingUsers = cartRepo.findAll();
             for (CartModel cart : existingUsers) {
@@ -62,16 +62,16 @@ public class CartService {
                 }
             }
 
-                CartModel cart = new CartModel();
+            CartModel cart = new CartModel();
 
-                cart.setUsers(userModel);
-                cart.setBook(bookModel);
-                cart.setQuantity(1);
-                cart.setTotalPrice((long) bookModel.getPrice());
+            cart.setUsers(userModel);
+            cart.setBook(bookModel);
+            cart.setQuantity(1);
+            cart.setTotalPrice((long) bookModel.getPrice());
 
-                CartModel cartModel = cartRepo.save(cart);
-                return CartConvertor.toDTO(cartModel);
-        }else throw new ResourceNotFoundException("Invalid Book ID!");
+            CartModel cartModel = cartRepo.save(cart);
+            return CartConvertor.toDTO(cartModel);
+        } else throw new ResourceNotFoundException("Invalid Book ID!");
 
 //        else throw new BookLimitException("There is no stock for this book product: "+book_id);
     }
@@ -80,7 +80,7 @@ public class CartService {
     public String removeItem(long cartId) {
         cartRepo.deleteById(cartId);
 
-        return "Removed from the cart "+cartId;
+        return "Removed from the cart " + cartId;
     }
 
 
@@ -92,14 +92,14 @@ public class CartService {
         else
             decrementQuantity(required_Cart, update_quantity);
 
-        return "Cart updated for the iD: "+cart_id;
+        return "Cart updated for the iD: " + cart_id;
     }
 
     private void incrementQuantity(CartModel required_Cart, long updateQuantity) {
 
         BookModel requiredBook = required_Cart.getBook();
-        required_Cart.setQuantity(updateQuantity+required_Cart.getQuantity());
-        required_Cart.setTotalPrice((long) (requiredBook.getPrice()* (updateQuantity+required_Cart.getQuantity())));
+        required_Cart.setQuantity(updateQuantity + required_Cart.getQuantity());
+        required_Cart.setTotalPrice((long) (requiredBook.getPrice() * (updateQuantity + required_Cart.getQuantity())));
 
         cartRepo.save(required_Cart);
 
@@ -108,8 +108,8 @@ public class CartService {
     private void decrementQuantity(CartModel required_Cart, long updateQuantity) {
 
         BookModel requiredBook = required_Cart.getBook();
-        required_Cart.setQuantity(updateQuantity- required_Cart.getQuantity());
-        required_Cart.setTotalPrice((long) (requiredBook.getPrice()* (updateQuantity- required_Cart.getQuantity())));
+        required_Cart.setQuantity(updateQuantity - required_Cart.getQuantity());
+        required_Cart.setTotalPrice((long) (requiredBook.getPrice() * (updateQuantity - required_Cart.getQuantity())));
 
         cartRepo.save(required_Cart);
     }
@@ -155,7 +155,7 @@ public class CartService {
 
         List<CartModel> cart = userModel.getCart();
 
-        for(CartModel c : cart){
+        for (CartModel c : cart) {
             cartRepo.deleteAll(c.getId());
         }
         return "Removed ";

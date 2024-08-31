@@ -49,6 +49,10 @@ public class UserModel {
     @JsonManagedReference(value = "cartref")
     private List<CartModel> cart;
 
+    @OneToMany(mappedBy = "user", fetch=FetchType.LAZY)
+    private List<OrderModel> orders;
+
+
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
     @JsonManagedReference(value = "wish_ref")
     @JsonIgnore

@@ -27,6 +27,7 @@ public class CartModel {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     @JsonBackReference(value = "cartref")
+//    @JsonIgnore
     private UserModel users;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
