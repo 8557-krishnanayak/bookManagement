@@ -51,4 +51,6 @@ public class UserDTO {
     private List<FeedBackDTO> feedbacks = new ArrayList<>();
 
     private List<CartDto> cart;
+
+    private List<OrderDTO> orders;
 }

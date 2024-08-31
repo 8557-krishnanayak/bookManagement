@@ -1,14 +1,9 @@
 package com.godigit.bookmybook.converstion;
 
 
-import com.godigit.bookmybook.dto.CartDto;
-import com.godigit.bookmybook.dto.FeedBackDTO;
-import com.godigit.bookmybook.dto.UserDTO;
-import com.godigit.bookmybook.model.CartModel;
-import com.godigit.bookmybook.dto.WishListDTO;
-import com.godigit.bookmybook.model.FeedBackModel;
-import com.godigit.bookmybook.model.UserModel;
-import com.godigit.bookmybook.model.WishListModel;
+import com.godigit.bookmybook.dto.*;
+import com.godigit.bookmybook.model.*;
+import org.hibernate.query.Order;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +36,9 @@ public class UserConverter {
         dto.setWishList(wishList);
 
 
+        List<OrderDTO> order = user.getOrders().stream().map(OrderConvertor::toDTO).toList();
+        dto.setOrders(order);
+
         List<FeedBackDTO> feedback = user.getFeedbacks().stream().map(FeedbackConverter::toDTO).toList();
         dto.setFeedbacks(feedback);
 
@@ -49,7 +47,7 @@ public class UserConverter {
 
     public static UserModel toEntity(UserDTO dto) {
 
-        if(dto == null)
+        if (dto == null)
             throw new IllegalArgumentException("UserDto cannot be null.");
         UserModel user = new UserModel();
         user.setId(dto.getId());
@@ -69,6 +67,10 @@ public class UserConverter {
 
         List<FeedBackModel> feedback = dto.getFeedbacks().stream().map(FeedbackConverter::toEntity).toList();
         user.setFeedbacks(feedback);
+
+
+        List<OrderModel> order = dto.getOrders().stream().map(OrderConvertor::toEntity).toList();
+        user.setOrders(order);
 
         System.out.println(user);
         return user;
