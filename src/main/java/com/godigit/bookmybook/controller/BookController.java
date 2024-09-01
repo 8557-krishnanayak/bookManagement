@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/book")
 public class BookController {
@@ -73,7 +74,7 @@ public class BookController {
      */
 
     @GetMapping()
-    public ResponseEntity<List<BookModel>> getAllBooks(@RequestHeader String token) {
+    public ResponseEntity<List<BookModel>> getAllBooks(@RequestHeader("Authorization") String token) {
         return new ResponseEntity<>(bookService.getAllBooks(token), HttpStatus.ACCEPTED);
     }
 

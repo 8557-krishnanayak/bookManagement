@@ -70,6 +70,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public List<UserDTO> getAllUser() {
         List<UserModel> allUserData = userRepository.findAll();
+        System.out.println(allUserData);
         return allUserData.stream().map(UserConverter::toDTO).collect(Collectors.toList());
     }
 

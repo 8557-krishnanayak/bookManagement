@@ -73,5 +73,9 @@ public class UserModel {
         if (this.feedbacks == null) {
             this.feedbacks = new ArrayList<>();
         }
+
+        if (this.orders == null) {
+            this.orders = new ArrayList<>();
+        }
     }
 }

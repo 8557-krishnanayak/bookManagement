@@ -50,7 +50,9 @@ public class UserDTO {
     @Builder.Default
     private List<FeedBackDTO> feedbacks = new ArrayList<>();
 
-    private List<CartDto> cart;
+    @Builder.Default
+    private List<CartDto> cart = new ArrayList<>();
 
-    private List<OrderDTO> orders;
+    @Builder.Default
+    private List<OrderDTO> orders = new ArrayList<>();
 }

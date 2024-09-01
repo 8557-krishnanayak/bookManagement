@@ -68,6 +68,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> runtimeException(RuntimeException e) {
         Map<String, String> errors = new HashMap<>();
+
         errors.put("error", e.getMessage());
         errors.put("exception", e.getClass().toString());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
@@ -83,6 +84,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<?> nullPointerException(NullPointerException e)
     {
+        e.printStackTrace();
         Map<String, String> errors = new HashMap<>();
         errors.put("error", e.getMessage());
         errors.put("exception", e.getClass().toString());

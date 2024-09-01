@@ -1,6 +1,7 @@
 package com.godigit.bookmybook.controller;
 
 import com.godigit.bookmybook.dto.LoginDto;
+import com.godigit.bookmybook.dto.Response.ApiResponse;
 import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.service.UserService;
 import jakarta.validation.Valid;
@@ -48,7 +49,11 @@ public class UserController {
         String password = loginDto.getPassword();
         Map<String, String> map = new HashMap<>();
         map.put("token", userService.loginService(email, password));
-        return new ResponseEntity<>(map, HttpStatus.OK);
+
+        ApiResponse loginToken = ApiResponse.builder()
+                .result(map).success(true).message("Login Token").build();
+
+        return new ResponseEntity<>(loginToken, HttpStatus.OK);
     }
 
 

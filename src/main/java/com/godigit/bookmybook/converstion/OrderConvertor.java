@@ -23,8 +23,8 @@ public class OrderConvertor {
         Address address = order.getAddress();
         dto.setAddress(toAddressDto(address));
 
-        List<BookDTO> book_list = order.getBooks().stream().map(BookConvertor::toDTO).toList();
-        dto.setBooks(book_list);
+        BookDTO book_list = BookConvertor.toDTO(order.getBook());
+        dto.setBook(book_list);
 
         return dto;
     }
@@ -38,8 +38,8 @@ public class OrderConvertor {
         AddressDTO address = dto.getAddress();
         order.setAddress(toAddressEntity(address));
 
-        List<BookModel> book_list = dto.getBooks().stream().map(BookConvertor::toEntity).toList();
-        order.setBooks(book_list);
+        BookModel book_list = BookConvertor.toEntity(dto.getBook());
+        order.setBook(book_list);
 
         return order;
     }

@@ -26,7 +26,7 @@ public class OrderDTO {
 
     private AddressDTO address;
     private UserDTO user;
-    private List<BookDTO> books;
+    private BookDTO book;
     private boolean cancel;
 
 }

@@ -34,6 +34,7 @@ public class OrderService {
 
     public OrderModel placeOrder(AddressDTO addressDTO, long userId, String token) {
         UserModel userModel = userService.getUserModalById(userId);
+
         List<CartModel> cart_details = userModel.getCart();
         long price = 0;
         int quantity = 0;
@@ -59,6 +60,8 @@ public class OrderService {
     }
 
 
+
+
     public OrderModel placeOrderByToken(String token, AddressDTO addressDTO) {
         DataHolder decode = tokenUtility.decode(token);
         if (!decode.getRole().equalsIgnoreCase("customer")) {
@@ -71,6 +74,7 @@ public class OrderService {
     public void cancelOrderById(String token, long orderId) {
         OrderModel orderModel = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order doesn't exists"));
         orderModel.setCancel(true);
+
         orderRepo.save(orderModel);
         BookModel book = orderModel.getBook();
         int quantity = orderModel.getQuantity();
