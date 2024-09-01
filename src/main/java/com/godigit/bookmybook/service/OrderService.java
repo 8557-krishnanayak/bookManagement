@@ -35,28 +35,27 @@ public class OrderService {
     public OrderModel placeOrder(AddressDTO addressDTO, long userId, String token) {
         UserModel userModel = userService.getUserModalById(userId);
         List<CartModel> cart_details = userModel.getCart();
-        List<BookModel> books = cart_details.stream().map(CartModel::getBook).toList();
         long price=0;
         int quantity=0;
-        int totalquantity=0;
-
+        BookModel book=null;
+        Address add = new Address(addressDTO);
+        OrderModel order_save=null;
         for(CartModel cart:cart_details){
-            quantity+=cart.getQuantity();
-            totalquantity+=quantity;
+            quantity+=(int)cart.getQuantity();
+            book=cart.getBook();
             bookService.changeBookQuantity(token,cart.getBook().getId(),  ((int) cart.getBook().getQuantity()-quantity));
             price+= cart.getTotalPrice() * cart.getQuantity();
+            OrderModel orderModel = new OrderModel();
+            orderModel.setBook(book);
+            orderModel.setUser(userModel);
+            orderModel.setAddress(add);
+            orderModel.setQuantity(quantity);
+            orderModel.setPrice(price);
+           order_save=orderRepo.save(orderModel);
             quantity=0;
         }
-        Address add = new Address(addressDTO);
-        OrderModel orderModel = new OrderModel();
-        orderModel.setBooks(books);
-        orderModel.setUser(userModel);
-        orderModel.setAddress(add);
-        orderModel.setQuantity(totalquantity);
-        orderModel.setPrice(price);
-        orderRepo.save(orderModel);
         cartService.removeByUserId(token);
-        return orderModel;
+        return order_save;
     }
 
 
@@ -66,20 +65,16 @@ public class OrderService {
             throw new InvalidCustomerException("he/she is not a customer");
         }
         return placeOrder(addressDTO,decode.getId(),token);
-
     }
+
 
     public void cancelOrderById(String token, long orderId) {
         OrderModel orderModel=orderRepo.findById(orderId).orElseThrow(()->new ResourceNotFoundException("Order doesn't exists"));
         orderModel.setCancel(true);
         orderRepo.save(orderModel);
-        for (BookModel book : orderModel.getBooks()) {
-            int quantity=orderModel.getQuantity();
-            long bookId = book.getId();
-            System.out.println(book.getQuantity());
-            bookService.changeBookQuantity(token, bookId, (int) (book.getQuantity()+quantity));
-        }
-
+        BookModel book=orderModel.getBook();
+        int quantity=orderModel.getQuantity();
+        bookService.changeBookQuantity(token, book.getId(), (int) (book.getQuantity()+quantity));
     }
 
 
@@ -91,7 +86,6 @@ public class OrderService {
         }
 
         return orderRepo.findByCancel(cancel);
-
     }
 
 
@@ -100,10 +94,7 @@ public class OrderService {
         if (!decode.getRole().equalsIgnoreCase("customer")) {
             throw new ResourceNotFoundException("no orders found");
         }
-
         return orderRepo.findByUserId(decode.getId());
-
-
     }
 
 }

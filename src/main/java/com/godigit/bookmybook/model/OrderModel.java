@@ -33,7 +33,8 @@ public class OrderModel {
     private double price;
     private int quantity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Address address;
 
     @ManyToOne
@@ -41,20 +42,24 @@ public class OrderModel {
     @JsonIgnore
     private UserModel user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_books",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private List<BookModel> books;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "order_books",
+//            joinColumns = @JoinColumn(name = "order_id"),
+//            inverseJoinColumns = @JoinColumn(name = "book_id")
+//    )
+//    private List<BookModel> books;
 
 
-    @PrePersist
-    void pre(){
-        if(this.books==null)
-            this.books=new ArrayList<>();
-    }
+    @ManyToOne
+    @JoinColumn(name = "book_order_id")
+    private  BookModel book;
+
+//    @PrePersist
+//    void pre(){
+//        if(this.books==null)
+//            this.books=new ArrayList<>();
+//    }
 
     private boolean cancel = false;
 

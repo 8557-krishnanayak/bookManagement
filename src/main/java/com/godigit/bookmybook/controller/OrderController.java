@@ -30,7 +30,6 @@ public class OrderController {
 
     @PostMapping("/placeOrder")
     public ResponseEntity<?> placeOrder(@RequestHeader String token,@RequestBody AddressDTO addressDTO){
-        System.err.println(addressDTO);
         return new ResponseEntity<>(orderService.placeOrderByToken(token, addressDTO), HttpStatus.ACCEPTED);
 
     }

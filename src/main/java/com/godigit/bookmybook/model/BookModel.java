@@ -34,7 +34,7 @@ public class BookModel {
     private double price;
     private long quantity;
 
-    @ManyToMany(mappedBy = "books")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<OrderModel> orders;
 
