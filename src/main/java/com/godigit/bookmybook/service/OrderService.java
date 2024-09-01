@@ -1,10 +1,13 @@
 package com.godigit.bookmybook.service;
 
 import com.godigit.bookmybook.dto.*;
+import com.godigit.bookmybook.exception.InvalidCustomerException;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
 import com.godigit.bookmybook.model.*;
 import com.godigit.bookmybook.repository.OrderRepo;
 import com.godigit.bookmybook.util.TokenUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataLocationNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +20,7 @@ public class OrderService {
     OrderRepo orderRepo;
 
     @Autowired
-    BookService  bookService;
+    BookService bookService;
 
     @Autowired
     TokenUtility tokenUtility;
@@ -31,64 +34,47 @@ public class OrderService {
 
     public OrderModel placeOrder(AddressDTO addressDTO, long userId, String token) {
         UserModel userModel = userService.getUserModalById(userId);
-
         List<CartModel> cart_details = userModel.getCart();
-        System.err.println(cart_details);// all cart of user
-        System.err.println(addressDTO);
-        List<BookModel> books = cart_details.stream().map(CartModel::getBook).toList();
-
-
-
-        long price=0;
-        int quantity=0;
-
-        for(CartModel cart:cart_details){
-            quantity+=cart.getQuantity();
-            bookService.changeBookQuantity(token,cart.getBook().getId(),  ((int) cart.getBook().getQuantity()-quantity));
-            price+= cart.getTotalPrice() * cart.getQuantity();
-
-        }
-        System.err.println(price);
-        System.err.println(quantity);
-        System.err.println(books);
-
+        long price = 0;
+        int quantity = 0;
+        BookModel book = null;
         Address add = new Address(addressDTO);
-
-        OrderModel orderModel = new OrderModel();
-        orderModel.setBooks(books);
-        orderModel.setUser(userModel);
-        orderModel.setAddress(add);
-        orderModel.setQuantity(quantity);
-        orderModel.setPrice(price);
-        orderRepo.save(orderModel);
-//        cart_details.stream().map(c->{
-//            bookService.changeBookQuantity(token,c.getBook().getId(), (int)(c.getBook().getQuantity()-c.getQuantity()));
-//            return null;
-//        });
+        OrderModel order_save = null;
+        for (CartModel cart : cart_details) {
+            quantity += (int) cart.getQuantity();
+            book = cart.getBook();
+            bookService.changeBookQuantity(token, cart.getBook().getId(), ((int) cart.getBook().getQuantity() - quantity));
+            price += cart.getTotalPrice() * cart.getQuantity();
+            OrderModel orderModel = new OrderModel();
+            orderModel.setBook(book);
+            orderModel.setUser(userModel);
+            orderModel.setAddress(add);
+            orderModel.setQuantity(quantity);
+            orderModel.setPrice(price);
+            order_save = orderRepo.save(orderModel);
+            quantity = 0;
+        }
         cartService.removeByUserId(token);
-
-
-
-
-        return orderModel;
+        return order_save;
     }
-
-
 
 
     public OrderModel placeOrderByToken(String token, AddressDTO addressDTO) {
         DataHolder decode = tokenUtility.decode(token);
         if (!decode.getRole().equalsIgnoreCase("customer")) {
-            throw new RuntimeException("he/she is not a customer");
+            throw new InvalidCustomerException("he/she is not a customer");
         }
-        return placeOrder(addressDTO,decode.getId(),token);
-
+        return placeOrder(addressDTO, decode.getId(), token);
     }
 
+
     public void cancelOrderById(String token, long orderId) {
-        OrderModel orderModel=orderRepo.findById(orderId).orElseThrow(()->new RuntimeException("Order doesn't exists"));
+        OrderModel orderModel = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order doesn't exists"));
         orderModel.setCancel(true);
         orderRepo.save(orderModel);
+        BookModel book = orderModel.getBook();
+        int quantity = orderModel.getQuantity();
+        bookService.changeBookQuantity(token, book.getId(), (int) (book.getQuantity() + quantity));
     }
 
 
@@ -96,24 +82,19 @@ public class OrderService {
 
         DataHolder decode = tokenUtility.decode(token);
         if (decode.getRole().equalsIgnoreCase("customer")) {
-            throw new RuntimeException("no orders found");
+            throw new ResourceNotFoundException("no orders found");
         }
 
         return orderRepo.findByCancel(cancel);
-
     }
 
 
     public List<OrderModel> getAllOrdersForUser(String token) {
         DataHolder decode = tokenUtility.decode(token);
         if (!decode.getRole().equalsIgnoreCase("customer")) {
-            throw new RuntimeException("no orders found");
+            throw new ResourceNotFoundException("no orders found");
         }
-
         return orderRepo.findByUserId(decode.getId());
-
-
     }
 
-//    order-id,
 }
