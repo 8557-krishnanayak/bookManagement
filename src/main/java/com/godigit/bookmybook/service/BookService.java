@@ -223,8 +223,7 @@ public class BookService {
     public BookDTO addBookImage(String token, long image_id, long bookId) {
         checkAdmin(token);
         ImageModel image = imageService.getImageByID(token, image_id);
-        BookDTO bookDTO = getBookByID(bookId, token);
-        BookModel book = new BookModel(bookDTO);
+        BookModel book = getBookModel(bookId,token);
         book.setLogo(image);
         bookRepository.save(book);
         return new BookDTO(book);
