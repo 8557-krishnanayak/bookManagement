@@ -5,6 +5,7 @@ import com.godigit.bookmybook.model.FeedBackModel;
 import com.godigit.bookmybook.repository.UserRepository;
 import com.godigit.bookmybook.service.FeedBackService;
 import com.godigit.bookmybook.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class FeedBackController {
 //    }
 
     @PutMapping
-    public ResponseEntity<FeedBackDTO> updateFeedBack(@RequestHeader String token, @RequestParam Long feedback_id, @RequestBody FeedBackDTO feedBackDTO) {
+    public ResponseEntity<FeedBackDTO> updateFeedBack(@RequestHeader String token, @RequestParam Long feedback_id,@Valid @RequestBody FeedBackDTO feedBackDTO) {
         FeedBackDTO updatedFeedBack = feedBackService.updateFeedBack(token, feedback_id, feedBackDTO);
         return new ResponseEntity<>(updatedFeedBack, HttpStatus.OK);
     }
