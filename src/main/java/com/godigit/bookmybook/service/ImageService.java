@@ -24,6 +24,13 @@ public class ImageService {
     @Autowired
     TokenUtility tokenUtility;
 
+    /**
+     * Purpose: This method checks for duplication of an uploaded image file.
+     *
+     * @param logo This is the image file provided in a @RequestPart.
+     * @throws NullPointerException If the uploaded file is invalid or empty.
+     * @throws ResourceAlreadyExistException If an image with the same name and type already exists in the repository.
+     */
 
     private void checkDuplication(MultipartFile logo)
     {
@@ -45,6 +52,17 @@ public class ImageService {
         if(!dataHolder.getRole().equalsIgnoreCase("admin"))
             throw new UnauthorizedException("You are not authorized :-)");
     }
+
+    /**
+     * Purpose: This method is used to add a new image to the repository.
+     *
+     * @param token This is the user token used for authorizing the user.
+     *              The user must be an admin to perform this operation.
+     * @param logo  This is the image file provided in a @RequestPart.
+     * @return ImageModel The response entity containing the newly added ImageModel object.
+     * @throws IOException If an input or output exception occurred.
+     * @throws NullPointerException If the uploaded file is invalid or empty.
+     */
     public ImageModel addImage(String token, MultipartFile logo) throws IOException,NullPointerException {
         checkAdmin(token);
         checkDuplication(logo);
@@ -57,11 +75,31 @@ public class ImageService {
         return imageModel;
     }
 
+    /**
+     * Purpose: This method is used to retrieve an image by its ID.
+     *
+     * @param token This is the user token used for authorizing the user.
+     *              The user must be an admin to perform this operation.
+     * @param id    The ID of the image to be retrieved.
+     * @return ImageModel The response entity containing the ImageModel object of the retrieved image.
+     * @throws ResourceNotFoundException If the image with the specified ID is not found.
+     */
+
     public ImageModel getImageByID(String token,long id){
         checkAdmin(token);
         return imageRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Image doesn't exists :-)"));
     }
 
+    /**
+     * Purpose: This method is used to update an existing image in the repository.
+     *
+     * @param token   This is the user token used for authorizing the user.
+     *                The user must be an admin to perform this operation.
+     * @param logo    This is the new image file provided in a @RequestPart.
+     * @param imageId The ID of the image to be updated.
+     * @return String A message indicating the result of the image update operation.
+     * @throws IOException If an input or output exception occurred.
+     */
     public String updateImage(String token, MultipartFile logo, long imageId) throws IOException {
         checkDuplication(logo);
         ImageModel update_image = getImageByID(token,imageId);
