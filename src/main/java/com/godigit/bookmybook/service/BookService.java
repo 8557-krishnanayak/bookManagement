@@ -134,8 +134,7 @@ public class BookService {
     //    TODO: Update Book - only if the user admin
     public String updateBook(String token, Long id, BookDTO bookDTO) {
 
-        BookDTO bookUpdate = getBookByID(id, token);
-        BookModel book = new BookModel(bookUpdate);
+        BookModel book = getBookModel(id,token);
 
         if (bookDTO.getBookName() != null)
             book.setBookName(bookDTO.getBookName());
