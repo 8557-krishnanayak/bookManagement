@@ -55,18 +55,33 @@ public class CartController {
 
 
     /**
-     * Purpose: This API(Application Programming Interface) is created for updating the quantity of the book product
+     * Purpose: This API(Application Programming Interface) is created for increasing the quantity of the book product
      * @param token This is the authentication token of the user
      * @param cart_id This is the ID of the cart item which is to be updated
      * @param quantity This is the quantity which is to be updated for the book in the cart
      * @return Returns a message indicating the cart updated
      */
-    @PutMapping("/updatequantity/{cart_id}/{quantity}")
-    public ResponseEntity<?> updateQuantity(@RequestHeader String token,@PathVariable long cart_id,@PathVariable long quantity){
-        return new ResponseEntity<>(cart_service.updateQuantity(token,cart_id,quantity),HttpStatus.OK);
+    @PutMapping("/increasequantity/{cart_id}/{quantity}")
+    public ResponseEntity<?> increaseQuantity(@RequestHeader String token,@PathVariable long cart_id,@PathVariable long quantity){
+        return new ResponseEntity<>(cart_service.increaseQuantity(token,cart_id,quantity),HttpStatus.OK);
 
     }
 
+
+    /**
+     * Purpose: This API(Application Programming Interface) is created for decreasing the quantity of the book product
+     * @param token This is the authentication token of the user
+     * @param cart_id This is the ID of the cart item which is to be updated
+     * @param quantity This is the quantity which is to be updated for the book in the cart
+     * @return Returns a message indicating the cart updated
+     */
+
+
+    @PutMapping("/deacreasequantity/{cart_id}/{quantity}")
+    public ResponseEntity<?> decreaseQuantity(@RequestHeader String token,@PathVariable long cart_id,@PathVariable long quantity){
+        return new ResponseEntity<>(cart_service.decreaseQuantity(token,cart_id,quantity),HttpStatus.OK);
+
+    }
 
     /**
      * Purpose: This API(Application Programming Interface) is created to retrieve cart items for a particular user

@@ -12,6 +12,7 @@ import com.godigit.bookmybook.exception.ResourceNotFoundException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.CartModel;
 import com.godigit.bookmybook.model.UserModel;
+
 import com.godigit.bookmybook.repository.BookRepository;
 import com.godigit.bookmybook.repository.CartRepository;
 import com.godigit.bookmybook.repository.UserRepository;
@@ -49,8 +50,7 @@ public class CartService {
         UserModel userModel = userService.getUserModalById(dataHolder.getId());
         BookModel bookModel= bookService.getBookByID(book_id,token);
 
-        if(bookModel.getQuantity()>=1 && bookModel!=null) {
-
+        if(bookModel!=null){
             List<CartModel> existingUsers = cartRepo.findAll();
             for (CartModel cart : existingUsers) {
                 if ((cart.getUsers().getId().equals(dataHolder.getId())) && (cart.getBook().getId() == book_id)) {
@@ -73,7 +73,6 @@ public class CartService {
                 return CartConvertor.toDTO(cartModel);
         }else throw new ResourceNotFoundException("Invalid Book ID!");
 
-//        else throw new BookLimitException("There is no stock for this book product: "+book_id);
     }
 
 
@@ -84,34 +83,32 @@ public class CartService {
     }
 
 
-    public String updateQuantity(String token, long cart_id, long update_quantity) {
+
+    public String increaseQuantity(String token, long cart_id, long update_quantity) {
 
         CartModel required_Cart = cartRepo.findById(cart_id).orElseThrow(() -> new ResourceNotFoundException("Cart id doesn't exist!"));
-        if (update_quantity > required_Cart.getQuantity())
-            incrementQuantity(required_Cart, update_quantity);
-        else
-            decrementQuantity(required_Cart, update_quantity);
+        BookModel required_book = required_Cart.getBook();
 
-        return "Cart updated for the iD: "+cart_id;
-    }
-
-    private void incrementQuantity(CartModel required_Cart, long updateQuantity) {
-
-        BookModel requiredBook = required_Cart.getBook();
-        required_Cart.setQuantity(updateQuantity+required_Cart.getQuantity());
-        required_Cart.setTotalPrice((long) (requiredBook.getPrice()* (updateQuantity+required_Cart.getQuantity())));
+        if(required_book.getPrice() >= update_quantity ) {
+            required_Cart.setQuantity(update_quantity + required_Cart.getQuantity());
+            required_Cart.setTotalPrice((long) (required_book.getPrice() * (update_quantity + required_Cart.getQuantity())));
+        }else throw new BookLimitException("There is no stock for this book product:" +required_book.getId());
 
         cartRepo.save(required_Cart);
 
+        return "Quantity increased for the cart id :"+cart_id;
     }
 
-    private void decrementQuantity(CartModel required_Cart, long updateQuantity) {
+    public String decreaseQuantity(String token, long cart_id, long update_quantity) {
+        CartModel required_Cart = cartRepo.findById(cart_id).orElseThrow(() -> new ResourceNotFoundException("Cart id doesn't exist!"));
+        BookModel required_book = required_Cart.getBook();
 
-        BookModel requiredBook = required_Cart.getBook();
-        required_Cart.setQuantity(updateQuantity- required_Cart.getQuantity());
-        required_Cart.setTotalPrice((long) (requiredBook.getPrice()* (updateQuantity- required_Cart.getQuantity())));
+        required_Cart.setQuantity(required_Cart.getQuantity()-update_quantity);
+        required_Cart.setTotalPrice((long) (required_book.getPrice()* (required_Cart.getQuantity())-update_quantity));
 
         cartRepo.save(required_Cart);
+
+        return "Quantity decreased for the cart_id: "+cart_id;
     }
 
 
@@ -120,11 +117,6 @@ public class CartService {
         UserModel userModel = userService.getUserModalById(dataHolder.getId());
 
         List<CartModel> cart = userModel.getCart();
-//        List<CartModel> userCartItems = new ArrayList<>();
-//
-//        for(CartModel c : cart){
-//            userCartItems.add(c);
-//        }
         return cart;
     }
 
@@ -145,8 +137,6 @@ public class CartService {
         System.out.println(user.getRole());
         return user != null && user.getRole().equalsIgnoreCase("ADMIN");
     }
-
-
 
     @Transactional
     public String removeByUserId(String token) {
