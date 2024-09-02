@@ -29,8 +29,13 @@ public class FeedBackController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<FeedBackDTO>> getFeedBack(@RequestHeader String token, @RequestParam Long book_id) {
-        List<FeedBackDTO> feedbackList = feedBackService.getFeedback(book_id);
+    public ResponseEntity<List<FeedBackDTO>> getFeedBack(@RequestHeader String token) {
+        List<FeedBackDTO> feedbackList = feedBackService.getUserFeedback(token);
+        return new ResponseEntity<>(feedbackList, HttpStatus.OK);
+    }
+    @GetMapping("/get/book")
+    public ResponseEntity<List<FeedBackDTO>> getFeedBack(@RequestHeader String token,@RequestParam Long book_id) {
+        List<FeedBackDTO> feedbackList = feedBackService.getBookFeedbacks(token,book_id);
         return new ResponseEntity<>(feedbackList, HttpStatus.OK);
     }
 

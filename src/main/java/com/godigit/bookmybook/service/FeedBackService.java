@@ -62,9 +62,22 @@ public class FeedBackService {
         return FeedbackConverter.toDTO(save);
     }
 
-    public List<FeedBackDTO> getFeedback(Long bookId) {
-        List<FeedBackModel> feedbackList = feedBackRepository.findByBookId(bookId);
-        return feedbackList.stream()
+    public List<FeedBackDTO> getUserFeedback(String token) {
+        Long user_id = tokenUtility.decode(token).getId();
+
+        UserModel userModalById = userService.getUserModalById(user_id);
+        List<FeedBackModel> feedbacksList = userModalById.getFeedbacks();
+
+        return feedbacksList.stream()
+                .map(FeedbackConverter::toDTO)
+                .collect(Collectors.toList());
+    }
+    public List<FeedBackDTO> getBookFeedbacks(String token,Long book_id) {
+
+        BookModel BookModalById = bookService.getBookModel(book_id,token);
+        List<FeedBackModel> feedbacksList = BookModalById.getFeedBack();
+
+        return feedbacksList.stream()
                 .map(FeedbackConverter::toDTO)
                 .collect(Collectors.toList());
     }
