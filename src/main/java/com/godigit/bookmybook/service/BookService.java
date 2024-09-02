@@ -67,7 +67,7 @@ public class BookService {
     public BookDTO getBookByID(Long id, String token) {
         checkUser(token);
         BookModel book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        return new BookDTO(book);
+        return BookConvertor.toDTO(book);
     }
 
     public BookModel getBookModel(Long id,String token){

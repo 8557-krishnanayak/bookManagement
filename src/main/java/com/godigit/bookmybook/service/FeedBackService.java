@@ -3,6 +3,7 @@ package com.godigit.bookmybook.service;
 import com.godigit.bookmybook.converstion.FeedbackConverter;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.FeedBackDTO;
+import com.godigit.bookmybook.exception.ResourceAlreadyExistException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.FeedBackModel;
 import com.godigit.bookmybook.model.UserModel;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,17 +32,23 @@ public class FeedBackService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     public FeedBackDTO createFeedBack(String token, Long bookId, FeedBackDTO feedbackDTO) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long userId = dataHolder.getId();
         BookModel bookModel = bookService.getBookModel(bookId, token);
+
+        Optional<FeedBackModel> feedBackModel = feedBackRepository.findByUserIdAndBookId(dataHolder.getId(), bookId);
+        if (feedBackModel.isPresent()) throw new ResourceAlreadyExistException("same user can't give the feedback again");
 
         return addFeedBack(userId, bookModel, feedbackDTO);
     }
 
     public FeedBackDTO addFeedBack(Long userId, BookModel book, FeedBackDTO feedbackDTO) {
 
-        UserModel user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserModel user = userService.getUserModalById(userId);
 
         FeedBackModel feedback = new FeedBackModel();
         feedback.setUser(user);
@@ -65,6 +73,7 @@ public class FeedBackService {
         List<FeedBackModel> feedBackDTOList = feedBackRepository.findAll();
         return feedBackDTOList;
     }
+
     public FeedBackDTO updateFeedBack(String token, Long feedbackId, FeedBackDTO feedbackDTO) {
         DataHolder dataHolder = tokenUtility.decode(token);
         Long userId = dataHolder.getId();

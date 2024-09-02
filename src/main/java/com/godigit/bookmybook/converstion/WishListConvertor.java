@@ -1,9 +1,11 @@
 package com.godigit.bookmybook.converstion;
 
 import com.godigit.bookmybook.dto.BookDTO;
+import com.godigit.bookmybook.dto.FeedBackDTO;
 import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.dto.WishListDTO;
 import com.godigit.bookmybook.model.BookModel;
+import com.godigit.bookmybook.model.FeedBackModel;
 import com.godigit.bookmybook.model.UserModel;
 import com.godigit.bookmybook.model.WishListModel;
 
@@ -52,6 +54,10 @@ public class WishListConvertor {
         dto.setPrice(book.getPrice());
         dto.setAuthor(book.getAuthor());
 
+
+        List<FeedBackDTO> list = book.getFeedBack().stream().map(FeedbackConverter::toDTO).toList();
+        dto.setFeedBack(list);
+
         return dto;
     }
 
@@ -66,6 +72,9 @@ public class WishListConvertor {
         book.setQuantity(Dto.getQuantity());
         book.setPrice(Dto.getPrice());
         book.setAuthor(Dto.getAuthor());
+
+        List<FeedBackModel> list = Dto.getFeedBack().stream().map(FeedbackConverter::toEntity).toList();
+        book.setFeedBack(list);
 
         return book;
     }
