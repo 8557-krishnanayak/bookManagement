@@ -20,10 +20,6 @@ public class WishListConvertor {
         BookDTO bookDto = WishListConvertor.toBookDto(book);
         listDTO.setBook(bookDto);
 
-//        UserModel user = wishList.getUser();
-//        UserDTO userDto = UserConverter.toDTO(user);
-//        listDTO.setUser(userDto);
-
         return listDTO;
     }
 
@@ -34,11 +30,6 @@ public class WishListConvertor {
         BookDTO book = listDTO.getBook();
         BookModel bookModel = WishListConvertor.toBookEntity(book);
         wishList.setBook(bookModel);
-//
-//        UserDTO user = listDTO.getUser();
-//        UserModel userModel = UserConverter.toEntity(user);
-//        wishList.setUser(userModel);
-
         return wishList;
     }
 
@@ -53,11 +44,8 @@ public class WishListConvertor {
         dto.setQuantity(book.getQuantity());
         dto.setPrice(book.getPrice());
         dto.setAuthor(book.getAuthor());
-
-
-        List<FeedBackDTO> list = book.getFeedBack().stream().map(FeedbackConverter::toDTO).toList();
+        List<FeedBackDTO>list=book.getFeedBack().stream().map(FeedbackConverter::toDTO).toList();
         dto.setFeedBack(list);
-
         return dto;
     }
 
@@ -72,8 +60,7 @@ public class WishListConvertor {
         book.setQuantity(Dto.getQuantity());
         book.setPrice(Dto.getPrice());
         book.setAuthor(Dto.getAuthor());
-
-        List<FeedBackModel> list = Dto.getFeedBack().stream().map(FeedbackConverter::toEntity).toList();
+        List<FeedBackModel>list=Dto.getFeedBack().stream().map(FeedbackConverter::toEntity).toList();
         book.setFeedBack(list);
 
         return book;
