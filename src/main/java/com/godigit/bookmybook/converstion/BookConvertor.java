@@ -13,6 +13,7 @@ public class BookConvertor {
 
         if (book == null) return dto;
 
+        dto.setId(book.getId());
         dto.setBookName(book.getBookName());
         dto.setLogo(book.getLogo());
         dto.setPrice(book.getPrice());
@@ -32,6 +33,7 @@ public class BookConvertor {
         BookModel book = new BookModel();
         if (Dto == null) return book;
 
+        book.setId(Dto.getId());
         book.setBookName(Dto.getBookName());
         book.setLogo(Dto.getLogo());
         book.setPrice(Dto.getPrice());
