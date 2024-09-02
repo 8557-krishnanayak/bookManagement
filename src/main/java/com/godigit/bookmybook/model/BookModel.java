@@ -1,6 +1,7 @@
 package com.godigit.bookmybook.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.godigit.bookmybook.converstion.FeedbackConverter;
 import com.godigit.bookmybook.dto.BookDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,5 +48,7 @@ public class BookModel {
         this.logo = bookDTO.getLogo();
         this.price = bookDTO.getPrice();
         this.quantity = bookDTO.getQuantity();
+      // this.feedBack=bookDTO.getFeedBack().stream().map(FeedbackConverter::toEntity).toList();
+
     }
 }
