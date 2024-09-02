@@ -23,10 +23,11 @@ public class OrderController {
     UserService userService;
 
     /**
-     * Purpose: this API(application programming interface) is created for
-     * placing an order
-     * @param
-     * **/
+     * Purpose: This API (Application Programming Interface) is created for placing an order.
+     * @param token This is the authentication token of the user.
+     * @param addressDTO The data transfer object containing the address details for the order.
+     * @return returns the details of the placed order.
+     */
 
     @PostMapping("/placeOrder")
     public ResponseEntity<?> placeOrder(@RequestHeader String token,@RequestBody AddressDTO addressDTO){
@@ -34,8 +35,14 @@ public class OrderController {
 
     }
 
+
     /**
-     * cancel order by using order id**/
+     * Purpose: This API (Application Programming Interface) is created for canceling an existing order.
+     * @param token This is the authentication token of the user.
+     * @param orderId The ID of the order which is to be canceled.
+     * @return void.
+     */
+
 
     @PutMapping("/cancelOrder/{orderId}")
     public void cancelOrder(@RequestHeader String token, @PathVariable long orderId){
@@ -44,8 +51,11 @@ public class OrderController {
     }
 
     /**
-     * getAllOrders by using admin token
-     * **/
+     * Purpose: This API (Application Programming Interface) is created for retrieving all orders.
+     * @param token This is the authentication token of the user.
+     * @param cancel This is a boolean flag to filter orders based on their cancellation status. Default value is false.
+     * @return returns a list of all orders.
+     */
 
     @GetMapping("/getAllOrders")
     public List<OrderModel> getAllOrders(@RequestHeader String token, @RequestParam(defaultValue = "false") boolean cancel){
@@ -53,7 +63,10 @@ public class OrderController {
     }
 
     /**
-     * getAllOrdersForUser**/
+     * Purpose: This API (Application Programming Interface) is created for retrieving all orders for a specific user.
+     * @param token This is the authentication token of the user.
+     * @return returns a ResponseEntity containing a list of all orders for the user. If no orders are found, it returns a 404 Not Found status.
+     */
 
     @GetMapping("/getAllordersForUser")
     public ResponseEntity<List<OrderModel>> getAllOrdersForUser(@RequestHeader String token){
@@ -62,8 +75,5 @@ public class OrderController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(orders);
-
     }
-
-
 }

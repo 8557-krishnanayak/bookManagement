@@ -41,7 +41,7 @@ public class OrderService {
         Address add = new Address(addressDTO);
         OrderModel order_save=null;
         for(CartModel cart:cart_details){
-            quantity+=(int)cart.getQuantity();
+            quantity=(int)cart.getQuantity();
             book=cart.getBook();
             bookService.changeBookQuantity(token,cart.getBook().getId(),  ((int) cart.getBook().getQuantity()-quantity));
             price+= cart.getTotalPrice() * cart.getQuantity();
@@ -52,7 +52,7 @@ public class OrderService {
             orderModel.setQuantity(quantity);
             orderModel.setPrice(price);
            order_save=orderRepo.save(orderModel);
-            quantity=0;
+
         }
         cartService.removeByUserId(token);
         return order_save;
@@ -84,7 +84,6 @@ public class OrderService {
         if (decode.getRole().equalsIgnoreCase("customer")) {
             throw new ResourceNotFoundException("no orders found");
         }
-
         return orderRepo.findByCancel(cancel);
     }
 

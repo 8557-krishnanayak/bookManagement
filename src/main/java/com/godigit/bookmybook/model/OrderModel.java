@@ -42,25 +42,9 @@ public class OrderModel {
     @JsonIgnore
     private UserModel user;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "order_books",
-//            joinColumns = @JoinColumn(name = "order_id"),
-//            inverseJoinColumns = @JoinColumn(name = "book_id")
-//    )
-//    private List<BookModel> books;
-
-
     @ManyToOne
     @JoinColumn(name = "book_order_id")
     private  BookModel book;
-
-//    @PrePersist
-//    void pre(){
-//        if(this.books==null)
-//            this.books=new ArrayList<>();
-//    }
-
     private boolean cancel = false;
 
     public OrderModel(OrderDTO orderDto) {
