@@ -61,7 +61,7 @@ public class AdminController {
      * @return Returns a ResponseEntity holding the list of all users along with the status code.
      */
     @GetMapping("/users")
-    public ResponseEntity<?> getAll(@RequestHeader String token) {
+    public ResponseEntity<?> getAll(@RequestHeader("Authorization") String token) {
         return new ResponseEntity<>(userService.getAllUser(token), HttpStatus.OK);
     }
 
@@ -73,7 +73,7 @@ public class AdminController {
      * @return Returns a ResponseEntity holding the user details object along with the status code.
      */
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getAll(@RequestHeader String token, @PathVariable Long id) {
+    public ResponseEntity<?> getAll(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         return new ResponseEntity<>(userService.getIdByToken(token, id), HttpStatus.OK);
     }
 }

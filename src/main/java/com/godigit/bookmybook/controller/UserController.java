@@ -31,7 +31,7 @@ public class UserController {
      */
     @PostMapping("/registration")
     public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDto) {
-        userDto.setRole("Customer");
+//        userDto.setRole("Customer");
         return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
     }
 
@@ -67,7 +67,7 @@ public class UserController {
      * @return Returns a ResponseEntity holding the updated User details object along with the status code.
      */
     @PutMapping
-    public ResponseEntity<?> update(@RequestHeader String token, @Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> update(@RequestHeader("Authorization") String token, @Valid @RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.updateByToken(token, userDTO), HttpStatus.OK);
     }
 
@@ -78,7 +78,7 @@ public class UserController {
      * @return Returns a ResponseEntity holding the deletion confirmation message along with the status code.
      */
     @DeleteMapping
-    public ResponseEntity<?> delete(@RequestHeader String token) {
+    public ResponseEntity<?> delete(@RequestHeader("Authorization") String token) {
         return new ResponseEntity<>(userService.deleteByToken(token), HttpStatus.OK);
     }
 }
