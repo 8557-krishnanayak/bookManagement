@@ -30,7 +30,7 @@ public class FeedBackController {
         return new ResponseEntity<>(addedFeedBack, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get/user")
     public ResponseEntity<List<FeedBackDTO>> getFeedBack(@RequestHeader String token) {
         List<FeedBackDTO> feedbackList = feedBackService.getUserFeedback(token);
         return new ResponseEntity<>(feedbackList, HttpStatus.OK);
