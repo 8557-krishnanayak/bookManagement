@@ -4,6 +4,8 @@ import com.godigit.bookmybook.converstion.FeedbackConverter;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.FeedBackDTO;
 import com.godigit.bookmybook.exception.ResourceAlreadyExistException;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
+import com.godigit.bookmybook.exception.UnauthorizedException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.FeedBackModel;
 import com.godigit.bookmybook.model.UserModel;
@@ -92,10 +94,10 @@ public class FeedBackService {
         Long userId = dataHolder.getId();
 
         FeedBackModel feedback = feedBackRepository.findById(feedbackId)
-                .orElseThrow(() -> new RuntimeException("Feedback not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
 
         if (!feedback.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Unauthorized to update this feedback");
+            throw new UnauthorizedException("Unauthorized to update this feedback");
         }
 
         feedback.setComments(feedbackDTO.getComments());

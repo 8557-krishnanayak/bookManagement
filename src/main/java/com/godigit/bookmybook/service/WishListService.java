@@ -4,6 +4,8 @@ import com.godigit.bookmybook.converstion.WishListConvertor;
 import com.godigit.bookmybook.dto.DataHolder;
 import com.godigit.bookmybook.dto.UserDTO;
 import com.godigit.bookmybook.dto.WishListDTO;
+import com.godigit.bookmybook.exception.ResourceAlreadyExistException;
+import com.godigit.bookmybook.exception.ResourceNotFoundException;
 import com.godigit.bookmybook.model.BookModel;
 import com.godigit.bookmybook.model.UserModel;
 import com.godigit.bookmybook.model.WishListModel;
@@ -45,11 +47,11 @@ public class WishListService {
 
         Optional<WishListModel> existingWishList = wishListRepository.findByUserIdAndBookId(user_id, book_id);
         if (existingWishList.isPresent()) {
-            throw new RuntimeException("Wishlist entry already exists");
+            throw new ResourceAlreadyExistException("Wishlist entry already exists");
         }
         BookModel bookModel = bookService.getBookModel(book_id, token);
         UserModel user = userRepository.findById(user_id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         WishListModel wish_list = WishListModel.builder().book(bookModel).user(user).build();
 
